@@ -1,5 +1,5 @@
 #Change PROJECT_NAME to the name of your project
-PROJECT()
+PROJECT(HistThresh)
 
 # required to avoid warnings while running cmake
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.2)
@@ -27,6 +27,11 @@ SET(Required_Packages
   ITK
 )
 
+INCLUDE_DIRECTORIES(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+ ${CMAKE_CURRENT_SOURCE_DIR}/Modules/maskAdaptor/
+)
+
 #this foreach loads all of the packages that you specified as required.
 #It shouldn't need to be modified.
 FOREACH(Package ${Required_Packages})
@@ -38,6 +43,7 @@ ENDFOREACH(Package)
 SET(Libraries
   ITKCommon
   ITKBasicFilters
+  ITKStatistics
   ITKIO
 )
 
@@ -69,7 +75,7 @@ ENDIF(BUILD_WRAPPERS)
 
 IF(BUILD_TESTING)
 
-FOREACH(CurrentExe "check")
+FOREACH(CurrentExe "testThresh")
   ADD_EXECUTABLE(${CurrentExe} ${CurrentExe}.cxx)
   TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
 ENDFOREACH(CurrentExe)
