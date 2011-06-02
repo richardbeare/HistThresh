@@ -178,13 +178,16 @@ TriangleThresholdImageCalculator<TInputImage>
   // figure out which way we are looking - we want to construct our
   // line between the max index and the further of 1% and 99%
   unsigned ThreshIdx=0;
-  if (fabs(MxIdx - onePCIdx) > fabs(MxIdx - nnPCIdx))
+  if (fabs((float)MxIdx - (float)onePCIdx) > fabs((float)MxIdx - (float)nnPCIdx))
     {
     // line to 1 %
+    std::cout << "Here" << std::endl;
     double slope = Mx/(MxIdx - onePCIdx);
-    for (unsigned k=0; k<MxIdx; k++)
+    for (unsigned k=onePCIdx; k<MxIdx; k++)
       {
-      triangle[k]=slope*(k-MxIdx) + Mx - relativeFrequency[k];
+      float line = (slope*(k-onePCIdx));
+      triangle[k]= line - relativeFrequency[k];
+      std::cout << relativeFrequency[k] << "," << line << "," << triangle[k] << std::endl;
       }
 
     ThreshIdx = onePCIdx + std::distance(&(triangle[onePCIdx]), std::max_element(&(triangle[onePCIdx]), &(triangle[MxIdx]))) ;
@@ -193,78 +196,23 @@ TriangleThresholdImageCalculator<TInputImage>
     {
     // line to 99 %
     double slope = -Mx/(nnPCIdx - MxIdx);
-    std::cout << "Here " << slope << std::endl;
-    std::cout << "------------" << std::endl;
     for (unsigned k=MxIdx; k < nnPCIdx; k++)
       {
-      std::cout << slope*(k-MxIdx) + Mx - relativeFrequency[k] << std::endl;
-      triangle[k]=(slope*(k-MxIdx) + Mx) - relativeFrequency[k];
+      float line = (slope*(k-MxIdx) + Mx);
+      triangle[k]= line - relativeFrequency[k];
+//      std::cout << relativeFrequency[k] << "," << line << "," << triangle[k] << std::endl;
       }
-    std::cout << "------------" << std::endl;
-
     ThreshIdx = MxIdx + std::distance(&(triangle[MxIdx]), std::max_element(&(triangle[MxIdx]), &(triangle[nnPCIdx]))) ;
     }
 
-  std::cout << ThreshIdx << " " << imageMin << " " << binMultiplier << std::endl;
   m_Threshold = static_cast<PixelType>( imageMin + 
                                         ( ThreshIdx + 1 ) / binMultiplier );
 
-#if 0 
-  // normalize the frequencies
-  double totalMean = 0.0;
-  for ( j = 0; j < m_NumberOfHistogramBins; j++ )
-    {
-    relativeFrequency[j] /= totalPixels;
-    totalMean += (j+1) * relativeFrequency[j];
-    }
 
-
-  // compute Otsu's threshold by maximizing the between-class
-  // variance
-  double freqLeft = relativeFrequency[0];
-  double meanLeft = 1.0;
-  double meanRight = ( totalMean - freqLeft ) / ( 1.0 - freqLeft );
-
-  double maxVarBetween = freqLeft * ( 1.0 - freqLeft ) *
-    vnl_math_sqr( meanLeft - meanRight );
-  int maxBinNumber = 0;
-
-  double freqLeftOld = freqLeft;
-  double meanLeftOld = meanLeft;
-
-  for ( j = 1; j < m_NumberOfHistogramBins; j++ )
-    {
-    freqLeft += relativeFrequency[j];
-    meanLeft = ( meanLeftOld * freqLeftOld + 
-                 (j+1) * relativeFrequency[j] ) / freqLeft;
-    if (freqLeft == 1.0)
-      {
-      meanRight = 0.0;
-      }
-    else
-      {
-      meanRight = ( totalMean - meanLeft * freqLeft ) / 
-        ( 1.0 - freqLeft );
-      }
-    double varBetween = freqLeft * ( 1.0 - freqLeft ) *
-      vnl_math_sqr( meanLeft - meanRight );
-   
-    if ( varBetween > maxVarBetween )
-      {
-      maxVarBetween = varBetween;
-      maxBinNumber = j;
-      }
-
-    // cache old values
-    freqLeftOld = freqLeft;
-    meanLeftOld = meanLeft; 
-
-    } 
-
-  m_Threshold = static_cast<PixelType>( imageMin + 
-                                        ( maxBinNumber + 1 ) / binMultiplier );
-
-#endif
+  // for (unsigned k = 0; k < m_NumberOfHistogramBins ; k++)
+  //   {
+  //   std::cout << relativeFrequency[k] << std::endl;
+  //   }
 
 }
 
