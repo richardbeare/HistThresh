@@ -1,31 +1,31 @@
-#ifndef __itkIntermodesThresholdImageFilter_h
-#define __itkIntermodesThresholdImageFilter_h
+#ifndef __itkKittlerIllingworthThresholdImageFilter_h
+#define __itkKittlerIllingworthThresholdImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include "itkFixedArray.h"
 
 namespace itk {
 
-/** \class IntermodesThresholdImageFilter 
- * \brief Threshold an image using the Intermodes Threshold
+/** \class KittlerIllingworthThresholdImageFilter 
+ * \brief Threshold an image using the KittlerIllingworth Threshold
  * 
  * Also has the option of taking the minimum between the peaks.
  *
- * See IntermodesThresholdImageCalculator for details and code heritagge
+ * See KittlerIllingworthThresholdImageCalculator for details and code heritagge
  *
- * \sa IntermodesThresholdImageCalculator
+ * \sa KittlerIllingworthThresholdImageCalculator
  * \sa BinaryThresholdImageFilter 
  * \sa OtsuThresholdImageFilter
  * \ingroup IntensityImageFilters  Multithreaded
  */
 
 template<class TInputImage, class TOutputImage>
-class ITK_EXPORT IntermodesThresholdImageFilter : 
+class ITK_EXPORT KittlerIllingworthThresholdImageFilter : 
     public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard Self typedef */
-  typedef IntermodesThresholdImageFilter                      Self;
+  typedef KittlerIllingworthThresholdImageFilter                      Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage>  Superclass;
   typedef SmartPointer<Self>                            Pointer;
   typedef SmartPointer<const Self>                      ConstPointer;
@@ -34,7 +34,7 @@ public:
   itkNewMacro(Self);  
 
   /** Runtime information support. */
-  itkTypeMacro(IntermodesThresholdImageFilter, ImageToImageFilter);
+  itkTypeMacro(KittlerIllingworthThresholdImageFilter, ImageToImageFilter);
   
   /** Image pixel value typedef. */
   typedef typename TInputImage::PixelType   InputPixelType;
@@ -77,15 +77,6 @@ public:
                     NumericTraits<unsigned long>::max() );
   itkGetConstMacro( NumberOfHistogramBins, unsigned long );
 
-  /** max number of histogram smoothing iterations */
-  itkSetMacro( MaxSmoothingIterations, unsigned long);
-  itkGetConstMacro( MaxSmoothingIterations, unsigned long );
-
-  /** select whether midpoint (intermode=true) or minimum between
-  peaks is used */
-  itkSetMacro( UseInterMode, bool);
-  itkGetConstMacro( UseInterMode, bool );
-
   /** Get the computed threshold. */
   itkGetConstMacro(Threshold,InputPixelType);
 
@@ -100,23 +91,21 @@ public:
   /** End concept checking */
 #endif
 protected:
-  IntermodesThresholdImageFilter();
-  ~IntermodesThresholdImageFilter(){};
+  KittlerIllingworthThresholdImageFilter();
+  ~KittlerIllingworthThresholdImageFilter(){};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   void GenerateInputRequestedRegion();
   void GenerateData ();
 
 private:
-  IntermodesThresholdImageFilter(const Self&); //purposely not implemented
+  KittlerIllingworthThresholdImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
   InputPixelType      m_Threshold;
   OutputPixelType     m_InsideValue;
   OutputPixelType     m_OutsideValue;
   unsigned long       m_NumberOfHistogramBins;
-  unsigned            m_MaxSmoothingIterations;
-  bool                m_UseInterMode;
 
 
 }; // end of class
@@ -124,7 +113,7 @@ private:
 } // end namespace itk
   
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkIntermodesThresholdImageFilter.txx"
+#include "itkKittlerIllingworthThresholdImageFilter.txx"
 #endif
 
 #endif

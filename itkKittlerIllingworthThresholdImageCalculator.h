@@ -1,6 +1,6 @@
 
-#ifndef __itkIntermodesThresholdImageCalculator_h
-#define __itkIntermodesThresholdImageCalculator_h
+#ifndef __itkKittlerIllingworthThresholdImageCalculator_h
+#define __itkKittlerIllingworthThresholdImageCalculator_h
 
 #include "itkObject.h"
 #include "itkObjectFactory.h"
@@ -9,8 +9,8 @@
 namespace itk
 {
 
-/** \class IntermodesThresholdImageCalculator
- * \brief Computes the Intermodes's threshold for an image.
+/** \class KittlerIllingworthThresholdImageCalculator
+ * \brief Computes the KittlerIllingworth's threshold for an image.
  *
  * J. M. S. Prewitt and M. L. Mendelsohn, "The analysis of cell images," in
  * Annals of the New York Academy of Sciences, vol. 128, pp. 1035-1053, 1966.
@@ -37,11 +37,11 @@ namespace itk
  * \ingroup Operators
  */
 template <class TInputImage>
-class ITK_EXPORT IntermodesThresholdImageCalculator : public Object 
+class ITK_EXPORT KittlerIllingworthThresholdImageCalculator : public Object 
 {
 public:
   /** Standard class typedefs. */
-  typedef IntermodesThresholdImageCalculator Self;
+  typedef KittlerIllingworthThresholdImageCalculator Self;
   typedef Object                       Superclass;
   typedef SmartPointer<Self>           Pointer;
   typedef SmartPointer<const Self>     ConstPointer;
@@ -50,7 +50,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(IntermodesThresholdImageCalculator, Object);
+  itkTypeMacro(KittlerIllingworthThresholdImageCalculator, Object);
 
   /** Type definition for the input image. */
   typedef TInputImage  ImageType;
@@ -70,10 +70,10 @@ public:
   /** Set the input image. */
   itkSetConstObjectMacro(Image,ImageType);
 
-  /** Compute the Intermodes's threshold for the input image. */
+  /** Compute the KittlerIllingworth's threshold for the input image. */
   void Compute(void);
 
-  /** Return the Intermodes's threshold value. */
+  /** Return the KittlerIllingworth's threshold value. */
   itkGetConstMacro(Threshold,PixelType);
   
   /** Set/Get the number of histogram bins. Default is 128. */
@@ -81,37 +81,28 @@ public:
                     NumericTraits<unsigned long>::max() );
   itkGetConstMacro( NumberOfHistogramBins, unsigned long );
 
-  
-  itkSetMacro( MaxSmoothingIterations, unsigned long);
-  itkGetConstMacro( MaxSmoothingIterations, unsigned long );
-
-  /** select whether midpoint (intermode=true) or minimum between
-  peaks is used */
-  itkSetMacro( UseInterMode, bool);
-  itkGetConstMacro( UseInterMode, bool );
-
-
   /** Set the region over which the values will be computed */
   void SetRegion( const RegionType & region );
 
 protected:
-  IntermodesThresholdImageCalculator();
-  virtual ~IntermodesThresholdImageCalculator() {};
+  KittlerIllingworthThresholdImageCalculator();
+  virtual ~KittlerIllingworthThresholdImageCalculator() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  bool bimodalTest(std::vector<double> h);
+  int Mean(std::vector<double> data);
+  double A(std::vector<double> y, int j);
+  double B(std::vector<double> y, int j);
+  double C(std::vector<double> y, int j);
 
 private:
-  IntermodesThresholdImageCalculator(const Self&); //purposely not implemented
+  KittlerIllingworthThresholdImageCalculator(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   
   PixelType            m_Threshold;
-  unsigned             m_MaxSmoothingIterations;
   unsigned long        m_NumberOfHistogramBins;
   ImageConstPointer    m_Image;
   RegionType           m_Region;
   bool                 m_RegionSetByUser;
-  bool                 m_UseInterMode;
 
 };
 
@@ -119,7 +110,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkIntermodesThresholdImageCalculator.txx"
+#include "itkKittlerIllingworthThresholdImageCalculator.txx"
 #endif
 
 #endif

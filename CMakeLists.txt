@@ -75,7 +75,7 @@ ENDIF(BUILD_WRAPPERS)
 
 IF(BUILD_TESTING)
 
-FOREACH(CurrentExe "testThresh" "testTriangle" "testIntermodes")
+FOREACH(CurrentExe "testThresh" "testTriangle" "testIntermodes" "testKittlerIllingworth")
   ADD_EXECUTABLE(${CurrentExe} ${CurrentExe}.cxx)
   TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
 ENDFOREACH(CurrentExe)

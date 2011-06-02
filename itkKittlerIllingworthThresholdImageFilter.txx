@@ -1,40 +1,36 @@
-#ifndef __itkIntermodesThresholdImageFilter_txx
-#define __itkIntermodesThresholdImageFilter_txx
-#include "itkIntermodesThresholdImageFilter.h"
+#ifndef __itkKittlerIllingworthThresholdImageFilter_txx
+#define __itkKittlerIllingworthThresholdImageFilter_txx
+#include "itkKittlerIllingworthThresholdImageFilter.h"
 
 #include "itkBinaryThresholdImageFilter.h"
-#include "itkIntermodesThresholdImageCalculator.h"
+#include "itkKittlerIllingworthThresholdImageCalculator.h"
 #include "itkProgressAccumulator.h"
 
 namespace itk {
 
 template<class TInputImage, class TOutputImage>
-IntermodesThresholdImageFilter<TInputImage, TOutputImage>
-::IntermodesThresholdImageFilter()
+KittlerIllingworthThresholdImageFilter<TInputImage, TOutputImage>
+::KittlerIllingworthThresholdImageFilter()
 {
   m_OutsideValue   = NumericTraits<OutputPixelType>::Zero;
   m_InsideValue    = NumericTraits<OutputPixelType>::max();
   m_Threshold      = NumericTraits<InputPixelType>::Zero;
   m_NumberOfHistogramBins = 128;
-  m_MaxSmoothingIterations = 10000;
-  m_UseInterMode = true;
 }
 
 template<class TInputImage, class TOutputImage>
 void
-IntermodesThresholdImageFilter<TInputImage, TOutputImage>
+KittlerIllingworthThresholdImageFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
   typename ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);
 
-  // Compute the Intermodes Threshold for the input image
-  typename IntermodesThresholdImageCalculator<TInputImage>::Pointer calculator =
-    IntermodesThresholdImageCalculator<TInputImage>::New();
+  // Compute the KittlerIllingworth Threshold for the input image
+  typename KittlerIllingworthThresholdImageCalculator<TInputImage>::Pointer calculator =
+    KittlerIllingworthThresholdImageCalculator<TInputImage>::New();
   calculator->SetImage (this->GetInput());
   calculator->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
-  calculator->SetMaxSmoothingIterations(m_MaxSmoothingIterations);
-  calculator->SetUseInterMode(m_UseInterMode);
   calculator->Compute();
   m_Threshold = calculator->GetThreshold();
 
@@ -55,7 +51,7 @@ IntermodesThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void
-IntermodesThresholdImageFilter<TInputImage, TOutputImage>
+KittlerIllingworthThresholdImageFilter<TInputImage, TOutputImage>
 ::GenerateInputRequestedRegion()
 {
   TInputImage * input = const_cast<TInputImage *>(this->GetInput());
@@ -67,7 +63,7 @@ IntermodesThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void 
-IntermodesThresholdImageFilter<TInputImage,TOutputImage>
+KittlerIllingworthThresholdImageFilter<TInputImage,TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
@@ -78,10 +74,6 @@ IntermodesThresholdImageFilter<TInputImage,TOutputImage>
      << static_cast<typename NumericTraits<OutputPixelType>::PrintType>(m_InsideValue) << std::endl;
   os << indent << "NumberOfHistogramBins: "
      << m_NumberOfHistogramBins << std::endl;
-  os << indent << "MaxSmoothingIterations: "
-     << m_MaxSmoothingIterations << std::endl;
-  os << indent << "Using Intermode/Minimum (true/false): "
-     << m_UseInterMode << std::endl;
   os << indent << "Threshold (computed): "
      << static_cast<typename NumericTraits<InputPixelType>::PrintType>(m_Threshold) << std::endl;
 

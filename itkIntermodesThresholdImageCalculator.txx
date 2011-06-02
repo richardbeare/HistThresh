@@ -22,6 +22,7 @@ IntermodesThresholdImageCalculator<TInputImage>
   m_NumberOfHistogramBins = 128;
   m_RegionSetByUser = false;
   m_MaxSmoothingIterations = 10000;
+  m_UseInterMode = true;
 }
 template<class TInputImage>
 bool
@@ -53,8 +54,6 @@ void
 IntermodesThresholdImageCalculator<TInputImage>
 ::Compute(void)
 {
-
-  unsigned int j;
 
   if ( !m_Image ) { return; }
   if( !m_RegionSetByUser )
@@ -142,18 +141,53 @@ IntermodesThresholdImageCalculator<TInputImage>
       return;
       }
     }
-  // The threshold is the mean between the two peaks.
-  unsigned tt=0;
-  for (unsigned i=1; i<smoothedHist.size() - 1; i++) 
+  if (m_UseInterMode)
     {
-    if (smoothedHist[i-1] < smoothedHist[i] && smoothedHist[i+1] < smoothedHist[i])
+    // The threshold is the mean between the two peaks.
+    unsigned tt=0;
+    for (unsigned i=1; i<smoothedHist.size() - 1; i++) 
       {
-      tt += i;
+      if (smoothedHist[i-1] < smoothedHist[i] && smoothedHist[i+1] < smoothedHist[i])
+	{
+	tt += i;
+	}
       }
-    }
-
+    
     m_Threshold = static_cast<PixelType>( imageMin + 
-                                        ( tt/2.0 ) / binMultiplier );
+					  ( tt/2.0 ) / binMultiplier );
+    }
+  else
+    {
+    // The threshold is the mean between peaks
+    unsigned firstpeak=0, lastpeak=0;
+    for (unsigned i=1; i<smoothedHist.size() - 1; i++) 
+      {
+      if (smoothedHist[i-1] < smoothedHist[i] && smoothedHist[i+1] < smoothedHist[i])
+	{
+	firstpeak = i;
+	break;
+	}
+      }
+    double MinVal = smoothedHist[firstpeak];
+    unsigned MinPos=firstpeak;
+
+    for (unsigned i=firstpeak + 1; i<smoothedHist.size() - 1; i++) 
+      {
+      if (smoothedHist[i] < MinVal)
+	{
+	MinVal = smoothedHist[i];
+	MinPos = i;
+	}
+      if (smoothedHist[i-1] < smoothedHist[i] && smoothedHist[i+1] < smoothedHist[i])
+	{
+	lastpeak = i;
+	break;
+	}
+      }
+    m_Threshold = static_cast<PixelType>( imageMin + 
+					  ( MinVal) / binMultiplier );
+
+    }
 
 }
 
