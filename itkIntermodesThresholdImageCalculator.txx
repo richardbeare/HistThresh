@@ -185,7 +185,7 @@ IntermodesThresholdImageCalculator<TInputImage>
 	}
       }
     m_Threshold = static_cast<PixelType>( imageMin + 
-					  ( MinVal) / binMultiplier );
+					  ( MinPos) / binMultiplier );
 
     }
 
