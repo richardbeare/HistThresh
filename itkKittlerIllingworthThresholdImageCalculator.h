@@ -12,21 +12,14 @@ namespace itk
 /** \class KittlerIllingworthThresholdImageCalculator
  * \brief Computes the KittlerIllingworth's threshold for an image.
  *
- * J. M. S. Prewitt and M. L. Mendelsohn, "The analysis of cell images," in
- * Annals of the New York Academy of Sciences, vol. 128, pp. 1035-1053, 1966.
- *  *
- * Assumes a bimodal histogram. The histogram needs is smoothed (using a
- * running average of size 3, iteratively) until there are only two local maxima.
- * j and k
- * Threshold t is (j+k)/2.
- * Images with histograms having extremely unequal peaks or a broad and
- * ﬂat valley are unsuitable for this method.
- *
+ * Kittler and J. Illingworth, "Minimum error thresholding," Pattern Recognition, vol. 19, pp. 41-47, 1986.
+ * C. A. Glasbey, "An analysis of histogram-based thresholding algorithms," CVGIP: Graphical Models and Image Processing, vol. 55, pp. 532-537, 1993.
  * Ported to ImageJ plugin by G.Landini from Antti Niemisto's Matlab code (GPL)
  * Original Matlab code Copyright (C) 2004 Antti Niemisto
  * See http://www.cs.tut.fi/~ant/histthresh/ for an excellent slide presentation
  * and the original Matlab code.
  *
+ * Ported to ITK from ImageJ version.
  *
  * \author Richard Beare.
  * This class is templated over the input image type.

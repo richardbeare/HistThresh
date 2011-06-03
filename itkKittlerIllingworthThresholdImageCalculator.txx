@@ -182,8 +182,11 @@ KittlerIllingworthThresholdImageCalculator<TInputImage>
       {
       threshold =(int) vcl_floor(temp);
       }
-  //IJ.log("Iter: "+ counter+++"  t:"+threshold);
   }
+  m_Threshold = static_cast<PixelType>( imageMin + 
+					( threshold) / binMultiplier );
+
+
 }
 
 template<class TInputImage>
