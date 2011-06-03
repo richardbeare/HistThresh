@@ -1,6 +1,6 @@
 
-#ifndef __itkHuangThresholdImageCalculator_h
-#define __itkHuangThresholdImageCalculator_h
+#ifndef __itkMomentsThresholdImageCalculator_h
+#define __itkMomentsThresholdImageCalculator_h
 
 #include "itkObject.h"
 #include "itkObjectFactory.h"
@@ -9,16 +9,17 @@
 namespace itk
 {
 
-/** \class HuangThresholdImageCalculator
- * \brief Computes the Huang's threshold for an image.
+/** \class MomentsThresholdImageCalculator
+ * \brief Computes the Moments's threshold for an image.
  * 
- * This calculator computes the Huang's fuzzy threshold which separates an image
- * into foreground and background components. Uses Shannon's entropy
- * function (one can also use Yager's entropy function)  
- * Huang L.-K. and Wang M.-J.J. (1995) "Image Thresholding by Minimizing  
- * the Measures of Fuzziness" Pattern Recognition, 28(1): 41-51
- * Reimplemented (to handle 16-bit efficiently) by Johannes Schindelin Jan 31, 2011
-
+ *  W. Tsai, "Moment-preserving thresholding: a new approach," Computer Vision,
+ * Graphics, and Image Processing, vol. 29, pp. 377-393, 1985.
+ * Ported to ImageJ plugin by G.Landini from the the open source project FOURIER 0.8
+ * by  M. Emre Celebi , Department of Computer Science,  Louisiana State University in Shreveport
+ * Shreveport, LA 71115, USA
+ *  http://sourceforge.net/projects/fourier-ipal
+ *  http://www.lsus.edu/faculty/~ecelebi/fourier.htm
+ *
  * Ported from the ImageJ implementation. http://pacific.mpi-cbg.de/wiki/index.php/Auto_Threshold
  *
  * This class is templated over the input image type.
@@ -29,11 +30,11 @@ namespace itk
  * \ingroup Operators
  */
 template <class TInputImage>
-class ITK_EXPORT HuangThresholdImageCalculator : public Object 
+class ITK_EXPORT MomentsThresholdImageCalculator : public Object 
 {
 public:
   /** Standard class typedefs. */
-  typedef HuangThresholdImageCalculator Self;
+  typedef MomentsThresholdImageCalculator Self;
   typedef Object                       Superclass;
   typedef SmartPointer<Self>           Pointer;
   typedef SmartPointer<const Self>     ConstPointer;
@@ -42,7 +43,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(HuangThresholdImageCalculator, Object);
+  itkTypeMacro(MomentsThresholdImageCalculator, Object);
 
   /** Type definition for the input image. */
   typedef TInputImage  ImageType;
@@ -62,10 +63,10 @@ public:
   /** Set the input image. */
   itkSetConstObjectMacro(Image,ImageType);
 
-  /** Compute the Huang's threshold for the input image. */
+  /** Compute the Moments's threshold for the input image. */
   void Compute(void);
 
-  /** Return the Huang's threshold value. */
+  /** Return the Moments's threshold value. */
   itkGetConstMacro(Threshold,PixelType);
   
   /** Set/Get the number of histogram bins. Default is 128. */
@@ -77,12 +78,12 @@ public:
   void SetRegion( const RegionType & region );
 
 protected:
-  HuangThresholdImageCalculator();
-  virtual ~HuangThresholdImageCalculator() {};
+  MomentsThresholdImageCalculator();
+  virtual ~MomentsThresholdImageCalculator() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:
-  HuangThresholdImageCalculator(const Self&); //purposely not implemented
+  MomentsThresholdImageCalculator(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   
   PixelType            m_Threshold;
@@ -97,7 +98,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkHuangThresholdImageCalculator.txx"
+#include "itkMomentsThresholdImageCalculator.txx"
 #endif
 
 #endif

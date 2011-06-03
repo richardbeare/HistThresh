@@ -1,8 +1,8 @@
 
-#ifndef __itkIsoDataThresholdImageCalculator_txx
-#define __itkIsoDataThresholdImageCalculator_txx
+#ifndef __itkMomentsThresholdImageCalculator_txx
+#define __itkMomentsThresholdImageCalculator_txx
 
-#include "itkIsoDataThresholdImageCalculator.h"
+#include "itkMomentsThresholdImageCalculator.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkMinimumMaximumImageCalculator.h"
 
@@ -15,8 +15,8 @@ namespace itk
  * Constructor
  */
 template<class TInputImage>
-IsoDataThresholdImageCalculator<TInputImage>
-::IsoDataThresholdImageCalculator()
+MomentsThresholdImageCalculator<TInputImage>
+::MomentsThresholdImageCalculator()
 {
   m_Image = NULL;
   m_Threshold = NumericTraits<PixelType>::Zero;
@@ -26,11 +26,11 @@ IsoDataThresholdImageCalculator<TInputImage>
 
 
 /*
- * Compute the IsoData's threshold
+ * Compute the Moments's threshold
  */
 template<class TInputImage>
 void
-IsoDataThresholdImageCalculator<TInputImage>
+MomentsThresholdImageCalculator<TInputImage>
 ::Compute(void)
 {
 
@@ -61,21 +61,9 @@ IsoDataThresholdImageCalculator<TInputImage>
 
   // create a histogram
   std::vector<double> relativeFrequency;
-  std::vector<double> cumSum;
-  std::vector<double> triangle;
   relativeFrequency.resize( m_NumberOfHistogramBins );
-  cumSum.resize( m_NumberOfHistogramBins );
-  triangle.resize( m_NumberOfHistogramBins );
-
   std::fill(relativeFrequency.begin(), relativeFrequency.end(), 0.0);
-  std::fill(cumSum.begin(), cumSum.end(), 0.0);
-  std::fill(triangle.begin(), triangle.end(), 0.0);
 
-  // for ( j = 0; j < m_NumberOfHistogramBins; j++ )
-  //   {
-  //   relativeFrequency[j] = 0.0;
-  //   cumSum[j]=0.0;
-  //   }
 
   double binMultiplier = (double) m_NumberOfHistogramBins /
     (double) ( imageMax - imageMin );
@@ -105,57 +93,60 @@ IsoDataThresholdImageCalculator<TInputImage>
     ++iter;
 
     }
-
-  int i, l, toth, totl, h, g=0;
-  for (i = 1; (unsigned)i < relativeFrequency.size(); i++)
+  double total =0;
+  double m0=1.0, m1=0.0, m2 =0.0, m3 =0.0, sum =0.0, p0=0.0;
+  double cd, c0, c1, z0, z1;	/* auxiliary variables */
+  int threshold = -1;
+  
+  std::vector<double> histo(relativeFrequency.size());
+  
+  for (unsigned i=0; i<relativeFrequency.size(); i++)
+    total+=relativeFrequency[i];
+  
+  for (unsigned i=0; i<relativeFrequency.size(); i++)
+    histo[i]=(double)(relativeFrequency[i]/total); //normalised histogram
+  
+  /* Calculate the first, second, and third order moments */
+  for ( unsigned i = 0; i < relativeFrequency.size(); i++ )
     {
-    if (relativeFrequency[i] > 0)
+    m1 += i * histo[i];
+    m2 += i * i * histo[i];
+    m3 += i * i * i * histo[i];
+    }
+  // 
+  // First 4 moments of the gray-level image should match the first 4 moments
+  // of the target binary image. This leads to 4 equalities whose solutions 
+  // are given in the Appendix of Ref. 1 
+  //
+  cd = m0 * m2 - m1 * m1;
+  c0 = ( -m2 * m2 + m1 * m3 ) / cd;
+  c1 = ( m0 * -m3 + m2 * m1 ) / cd;
+  z0 = 0.5 * ( -c1 - vcl_sqrt ( c1 * c1 - 4.0 * c0 ) );
+  z1 = 0.5 * ( -c1 + vcl_sqrt ( c1 * c1 - 4.0 * c0 ) );
+  p0 = ( z1 - m1 ) / ( z1 - z0 );  /* Fraction of the object pixels in the target binary image */
+
+  // The threshold is the gray-level closest  
+  // to the p0-tile of the normalized histogram 
+  sum=0;
+  for (unsigned i=0; i<relativeFrequency.size(); i++)
+    {
+    sum+=histo[i];
+    if (sum>p0) 
       {
-      g = i + 1;
+      threshold = i;
       break;
       }
     }
-  while (true)
-    {
-    l = 0;
-    totl = 0;
-    for (i = 0; i < g; i++) 
-      {
-      totl = totl + relativeFrequency[i];
-      l = l + (relativeFrequency[i] * i);
-      }
-    h = 0;
-    toth = 0;
-    for (i = g + 1; (unsigned)i < relativeFrequency.size(); i++)
-      {
-      toth += relativeFrequency[i];
-      h += (relativeFrequency[i]*i);
-      }
-    if (totl > 0 && toth > 0)
-      {
-      l /= totl;
-      h /= toth;
-      if (g == (int) round((l + h) / 2.0))
-	break;
-      }
-    g++;
-    if ((unsigned)g >relativeFrequency.size()-2)
-      {
-      itkWarningMacro(<<"IsoData Threshold not found.");
-      return;
-      }
-    }
 
-
-  m_Threshold = static_cast<PixelType>( imageMin + 
-                                        ( g ) / binMultiplier );
+    m_Threshold = static_cast<PixelType>( imageMin + 
+					  ( threshold ) / binMultiplier );
 
 
 }
 
 template<class TInputImage>
 void
-IsoDataThresholdImageCalculator<TInputImage>
+MomentsThresholdImageCalculator<TInputImage>
 ::SetRegion( const RegionType & region )
 {
   m_Region = region;
@@ -165,7 +156,7 @@ IsoDataThresholdImageCalculator<TInputImage>
   
 template<class TInputImage>
 void
-IsoDataThresholdImageCalculator<TInputImage>
+MomentsThresholdImageCalculator<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);

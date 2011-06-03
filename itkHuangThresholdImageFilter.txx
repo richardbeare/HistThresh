@@ -16,8 +16,6 @@ HuangThresholdImageFilter<TInputImage, TOutputImage>
   m_InsideValue    = NumericTraits<OutputPixelType>::max();
   m_Threshold      = NumericTraits<InputPixelType>::Zero;
   m_NumberOfHistogramBins = 128;
-  m_LowThresh = 0.01;
-  m_HighThresh= 0.99;
 }
 
 template<class TInputImage, class TOutputImage>
@@ -29,14 +27,12 @@ HuangThresholdImageFilter<TInputImage, TOutputImage>
   progress->SetMiniPipelineFilter(this);
 
   // Compute the Huang Threshold for the input image
-  typename HuangThresholdImageCalculator<TInputImage>::Pointer triang =
+  typename HuangThresholdImageCalculator<TInputImage>::Pointer calculator =
     HuangThresholdImageCalculator<TInputImage>::New();
-  triang->SetImage (this->GetInput());
-  triang->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
-  triang->SetLowThresh(m_LowThresh);
-  triang->SetHighThresh(m_HighThresh);
-  triang->Compute();
-  m_Threshold = triang->GetThreshold();
+  calculator->SetImage (this->GetInput());
+  calculator->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
+  calculator->Compute();
+  m_Threshold = calculator->GetThreshold();
 
   typename BinaryThresholdImageFilter<TInputImage,TOutputImage>::Pointer threshold =
     BinaryThresholdImageFilter<TInputImage,TOutputImage>::New();
@@ -45,7 +41,7 @@ HuangThresholdImageFilter<TInputImage, TOutputImage>
   threshold->GraftOutput (this->GetOutput());
   threshold->SetInput (this->GetInput());
   threshold->SetLowerThreshold(NumericTraits<InputPixelType>::NonpositiveMin());
-  threshold->SetUpperThreshold(triang->GetThreshold());
+  threshold->SetUpperThreshold(calculator->GetThreshold());
   threshold->SetInsideValue (m_InsideValue);
   threshold->SetOutsideValue (m_OutsideValue);
   threshold->Update();

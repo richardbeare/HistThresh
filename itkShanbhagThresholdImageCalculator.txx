@@ -1,8 +1,8 @@
 
-#ifndef __itkMaxEntropyThresholdImageCalculator_txx
-#define __itkMaxEntropyThresholdImageCalculator_txx
+#ifndef __itkShanbhagThresholdImageCalculator_txx
+#define __itkShanbhagThresholdImageCalculator_txx
 
-#include "itkMaxEntropyThresholdImageCalculator.h"
+#include "itkShanbhagThresholdImageCalculator.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkMinimumMaximumImageCalculator.h"
 
@@ -15,8 +15,8 @@ namespace itk
  * Constructor
  */
 template<class TInputImage>
-MaxEntropyThresholdImageCalculator<TInputImage>
-::MaxEntropyThresholdImageCalculator()
+ShanbhagThresholdImageCalculator<TInputImage>
+::ShanbhagThresholdImageCalculator()
 {
   m_Image = NULL;
   m_Threshold = NumericTraits<PixelType>::Zero;
@@ -26,11 +26,11 @@ MaxEntropyThresholdImageCalculator<TInputImage>
 
 
 /*
- * Compute the MaxEntropy's threshold
+ * Compute the Shanbhag's threshold
  */
 template<class TInputImage>
 void
-MaxEntropyThresholdImageCalculator<TInputImage>
+ShanbhagThresholdImageCalculator<TInputImage>
 ::Compute(void)
 {
 
@@ -62,6 +62,7 @@ MaxEntropyThresholdImageCalculator<TInputImage>
   // create a histogram
   std::vector<double> relativeFrequency;
   relativeFrequency.resize( m_NumberOfHistogramBins );
+
   std::fill(relativeFrequency.begin(), relativeFrequency.end(), 0.0);
 
   double binMultiplier = (double) m_NumberOfHistogramBins /
@@ -92,22 +93,20 @@ MaxEntropyThresholdImageCalculator<TInputImage>
     ++iter;
 
     }
-
-  int threshold=-1;
+  const double tolerance = 2.220446049250313E-16;
+  int threshold;
   int ih, it;
   int first_bin;
   int last_bin;
+  double term;
   double tot_ent;  /* total entropy */
-  double max_ent;  /* max entropy */
+  double min_ent;  /* max entropy */
   double ent_back; /* entropy of the background pixels at a given threshold */
   double ent_obj;  /* entropy of the object pixels at a given threshold */
   std::vector<double> norm_histo(relativeFrequency.size()); /* normalized histogram */
   std::vector<double> P1(relativeFrequency.size()); /* cumulative normalized histogram */
   std::vector<double> P2(relativeFrequency.size());
   
-  const double tolerance = 2.220446049250313E-16; // should get this
-						  // from traits
-
   int total =0;
   for (ih = 0; (unsigned)ih < relativeFrequency.size(); ih++ )
     total+=relativeFrequency[ih];
@@ -122,7 +121,7 @@ MaxEntropyThresholdImageCalculator<TInputImage>
     P1[ih]= P1[ih-1] + norm_histo[ih];
     P2[ih]= 1.0 - P1[ih];
     }
-  
+
   /* Determine the first non-zero bin */
   first_bin=0;
   for (ih = 0; (unsigned)ih < relativeFrequency.size(); ih++ ) 
@@ -133,7 +132,7 @@ MaxEntropyThresholdImageCalculator<TInputImage>
       break;
       }
     }
-  
+
   /* Determine the last non-zero bin */
   last_bin=relativeFrequency.size() - 1;
   for (ih = relativeFrequency.size() - 1; ih >= first_bin; ih-- ) 
@@ -144,45 +143,42 @@ MaxEntropyThresholdImageCalculator<TInputImage>
       break;
       }
     }
-
+  
   // Calculate the total entropy each gray-level
   // and find the threshold that maximizes it 
-  max_ent = itk::NumericTraits<double>::min();
+  threshold =-1;
+  min_ent = itk::NumericTraits<double>::max();
   
   for ( it = first_bin; it <= last_bin; it++ ) 
     {
     /* Entropy of the background pixels */
     ent_back = 0.0;
-    for ( ih = 0; ih <= it; ih++ )  
-      {
-      if ( relativeFrequency[ih] !=0 ) 
-	{
-	ent_back -= ( norm_histo[ih] / P1[it] ) * vcl_log ( norm_histo[ih] / P1[it] );
-	}
+    term = 0.5 / P1[it];
+    for ( ih = 1; ih <= it; ih++ )  
+      { //0+1?
+      ent_back -= norm_histo[ih] * vcl_log ( 1.0 - term * P1[ih - 1] );
       }
-
-  /* Entropy of the object pixels */
+    ent_back *= term;
+    
+			/* Entropy of the object pixels */
     ent_obj = 0.0;
+    term = 0.5 / P2[it];
     for ( ih = it + 1; (unsigned)ih < relativeFrequency.size(); ih++ )
       {
-      if (relativeFrequency[ih]!=0)
-	{
-	ent_obj -= ( norm_histo[ih] / P2[it] ) * vcl_log ( norm_histo[ih] / P2[it] );
-	}
+      ent_obj -= norm_histo[ih] * vcl_log ( 1.0 - term * P2[ih] );
       }
-    
-  /* Total entropy */
-  tot_ent = ent_back + ent_obj;
-  
-  // IJ.log(""+max_ent+"  "+tot_ent);
-  if ( max_ent < tot_ent ) 
-    {
-    max_ent = tot_ent;
-    threshold = it;
+    ent_obj *= term;
+
+    /* Total entropy */
+    tot_ent = vcl_abs ( ent_back - ent_obj );
+
+    if ( tot_ent < min_ent ) 
+      {
+      min_ent = tot_ent;
+      threshold = it;
+      }
     }
-    }
-  
-  
+
   m_Threshold = static_cast<PixelType>( imageMin + 
                                         ( threshold ) / binMultiplier );
 
@@ -191,7 +187,7 @@ MaxEntropyThresholdImageCalculator<TInputImage>
 
 template<class TInputImage>
 void
-MaxEntropyThresholdImageCalculator<TInputImage>
+ShanbhagThresholdImageCalculator<TInputImage>
 ::SetRegion( const RegionType & region )
 {
   m_Region = region;
@@ -201,7 +197,7 @@ MaxEntropyThresholdImageCalculator<TInputImage>
   
 template<class TInputImage>
 void
-MaxEntropyThresholdImageCalculator<TInputImage>
+ShanbhagThresholdImageCalculator<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);

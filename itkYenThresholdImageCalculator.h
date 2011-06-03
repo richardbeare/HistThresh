@@ -1,6 +1,6 @@
 
-#ifndef __itkHuangThresholdImageCalculator_h
-#define __itkHuangThresholdImageCalculator_h
+#ifndef __itkYenThresholdImageCalculator_h
+#define __itkYenThresholdImageCalculator_h
 
 #include "itkObject.h"
 #include "itkObjectFactory.h"
@@ -9,16 +9,22 @@
 namespace itk
 {
 
-/** \class HuangThresholdImageCalculator
- * \brief Computes the Huang's threshold for an image.
+/** \class YenThresholdImageCalculator
+ * \brief Computes the Yen's threshold for an image.
  * 
- * This calculator computes the Huang's fuzzy threshold which separates an image
- * into foreground and background components. Uses Shannon's entropy
- * function (one can also use Yager's entropy function)  
- * Huang L.-K. and Wang M.-J.J. (1995) "Image Thresholding by Minimizing  
- * the Measures of Fuzziness" Pattern Recognition, 28(1): 41-51
- * Reimplemented (to handle 16-bit efficiently) by Johannes Schindelin Jan 31, 2011
-
+ * Implements Yen  thresholding method
+ * 1) Yen J.C., Chang F.J., and Chang S. (1995) "A New Criterion 
+ *    for Automatic Multilevel Thresholding" IEEE Trans. on Image 
+ *    Processing, 4(3): 370-378
+ * 2) Sezgin M. and Sankur B. (2004) "Survey over Image Thresholding 
+ *    Techniques and Quantitative Performance Evaluation" Journal of 
+ *    Electronic Imaging, 13(1): 146-165
+ *    http://citeseer.ist.psu.edu/sezgin04survey.html
+ *
+ * M. Emre Celebi
+ * 06.15.2007
+ * Ported to ImageJ plugin by G.Landini from E Celebi's fourier_0.8 routines
+ *		
  * Ported from the ImageJ implementation. http://pacific.mpi-cbg.de/wiki/index.php/Auto_Threshold
  *
  * This class is templated over the input image type.
@@ -29,11 +35,11 @@ namespace itk
  * \ingroup Operators
  */
 template <class TInputImage>
-class ITK_EXPORT HuangThresholdImageCalculator : public Object 
+class ITK_EXPORT YenThresholdImageCalculator : public Object 
 {
 public:
   /** Standard class typedefs. */
-  typedef HuangThresholdImageCalculator Self;
+  typedef YenThresholdImageCalculator Self;
   typedef Object                       Superclass;
   typedef SmartPointer<Self>           Pointer;
   typedef SmartPointer<const Self>     ConstPointer;
@@ -42,7 +48,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(HuangThresholdImageCalculator, Object);
+  itkTypeMacro(YenThresholdImageCalculator, Object);
 
   /** Type definition for the input image. */
   typedef TInputImage  ImageType;
@@ -62,10 +68,10 @@ public:
   /** Set the input image. */
   itkSetConstObjectMacro(Image,ImageType);
 
-  /** Compute the Huang's threshold for the input image. */
+  /** Compute the Yen's threshold for the input image. */
   void Compute(void);
 
-  /** Return the Huang's threshold value. */
+  /** Return the Yen's threshold value. */
   itkGetConstMacro(Threshold,PixelType);
   
   /** Set/Get the number of histogram bins. Default is 128. */
@@ -77,12 +83,12 @@ public:
   void SetRegion( const RegionType & region );
 
 protected:
-  HuangThresholdImageCalculator();
-  virtual ~HuangThresholdImageCalculator() {};
+  YenThresholdImageCalculator();
+  virtual ~YenThresholdImageCalculator() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:
-  HuangThresholdImageCalculator(const Self&); //purposely not implemented
+  YenThresholdImageCalculator(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   
   PixelType            m_Threshold;
@@ -97,7 +103,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkHuangThresholdImageCalculator.txx"
+#include "itkYenThresholdImageCalculator.txx"
 #endif
 
 #endif

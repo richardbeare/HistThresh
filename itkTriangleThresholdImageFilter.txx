@@ -29,14 +29,14 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
   progress->SetMiniPipelineFilter(this);
 
   // Compute the Triangle Threshold for the input image
-  typename TriangleThresholdImageCalculator<TInputImage>::Pointer triang =
+  typename TriangleThresholdImageCalculator<TInputImage>::Pointer calculator =
     TriangleThresholdImageCalculator<TInputImage>::New();
-  triang->SetImage (this->GetInput());
-  triang->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
-  triang->SetLowThresh(m_LowThresh);
-  triang->SetHighThresh(m_HighThresh);
-  triang->Compute();
-  m_Threshold = triang->GetThreshold();
+  calculator->SetImage (this->GetInput());
+  calculator->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
+  calculator->SetLowThresh(m_LowThresh);
+  calculator->SetHighThresh(m_HighThresh);
+  calculator->Compute();
+  m_Threshold = calculator->GetThreshold();
 
   typename BinaryThresholdImageFilter<TInputImage,TOutputImage>::Pointer threshold =
     BinaryThresholdImageFilter<TInputImage,TOutputImage>::New();
@@ -45,7 +45,7 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
   threshold->GraftOutput (this->GetOutput());
   threshold->SetInput (this->GetInput());
   threshold->SetLowerThreshold(NumericTraits<InputPixelType>::NonpositiveMin());
-  threshold->SetUpperThreshold(triang->GetThreshold());
+  threshold->SetUpperThreshold(calculator->GetThreshold());
   threshold->SetInsideValue (m_InsideValue);
   threshold->SetOutsideValue (m_OutsideValue);
   threshold->Update();

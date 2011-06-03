@@ -1,16 +1,16 @@
-#ifndef __itkMaxEntropyThresholdImageFilter_txx
-#define __itkMaxEntropyThresholdImageFilter_txx
-#include "itkMaxEntropyThresholdImageFilter.h"
+#ifndef __itkRenyiEntropyThresholdImageFilter_txx
+#define __itkRenyiEntropyThresholdImageFilter_txx
+#include "itkRenyiEntropyThresholdImageFilter.h"
 
 #include "itkBinaryThresholdImageFilter.h"
-#include "itkMaxEntropyThresholdImageCalculator.h"
+#include "itkRenyiEntropyThresholdImageCalculator.h"
 #include "itkProgressAccumulator.h"
 
 namespace itk {
 
 template<class TInputImage, class TOutputImage>
-MaxEntropyThresholdImageFilter<TInputImage, TOutputImage>
-::MaxEntropyThresholdImageFilter()
+RenyiEntropyThresholdImageFilter<TInputImage, TOutputImage>
+::RenyiEntropyThresholdImageFilter()
 {
   m_OutsideValue   = NumericTraits<OutputPixelType>::Zero;
   m_InsideValue    = NumericTraits<OutputPixelType>::max();
@@ -20,15 +20,15 @@ MaxEntropyThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void
-MaxEntropyThresholdImageFilter<TInputImage, TOutputImage>
+RenyiEntropyThresholdImageFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
   typename ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);
 
-  // Compute the MaxEntropy Threshold for the input image
-  typename MaxEntropyThresholdImageCalculator<TInputImage>::Pointer calculator =
-    MaxEntropyThresholdImageCalculator<TInputImage>::New();
+  // Compute the RenyiEntropy Threshold for the input image
+  typename RenyiEntropyThresholdImageCalculator<TInputImage>::Pointer calculator =
+    RenyiEntropyThresholdImageCalculator<TInputImage>::New();
   calculator->SetImage (this->GetInput());
   calculator->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
   calculator->Compute();
@@ -51,7 +51,7 @@ MaxEntropyThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void
-MaxEntropyThresholdImageFilter<TInputImage, TOutputImage>
+RenyiEntropyThresholdImageFilter<TInputImage, TOutputImage>
 ::GenerateInputRequestedRegion()
 {
   TInputImage * input = const_cast<TInputImage *>(this->GetInput());
@@ -63,7 +63,7 @@ MaxEntropyThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void 
-MaxEntropyThresholdImageFilter<TInputImage,TOutputImage>
+RenyiEntropyThresholdImageFilter<TInputImage,TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);

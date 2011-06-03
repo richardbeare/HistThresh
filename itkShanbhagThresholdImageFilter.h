@@ -1,36 +1,36 @@
 
-#ifndef __itkMaxEntropyThresholdImageFilter_h
-#define __itkMaxEntropyThresholdImageFilter_h
+#ifndef __itkShanbhagThresholdImageFilter_h
+#define __itkShanbhagThresholdImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include "itkFixedArray.h"
 
 namespace itk {
 
-/** \class MaxEntropyThresholdImageFilter 
- * \brief Threshold an image using the MaxEntropy Threshold
+/** \class ShanbhagThresholdImageFilter 
+ * \brief Threshold an image using the Shanbhag Threshold
  *
  * This filter creates a binary thresholded image that separates an
  * image into foreground and background components. The filter
- * computes the threshold using the MaxEntropyThresholdImageCalculator and
+ * computes the threshold using the ShanbhagThresholdImageCalculator and
  * applies that theshold to the input image using the
  * BinaryThresholdImageFilter. The NunberOfHistogram bins can be set
  * for the Calculator. The InsideValue and OutsideValue can be set
  * for the BinaryThresholdImageFilter. Code derived from OtsuThresholdImageFilter
  *
- * \sa MaxEntropyThresholdImageCalculator
+ * \sa ShanbhagThresholdImageCalculator
  * \sa BinaryThresholdImageFilter 
  * \sa OtsuThresholdImageFilter
  * \ingroup IntensityImageFilters  Multithreaded
  */
 
 template<class TInputImage, class TOutputImage>
-class ITK_EXPORT MaxEntropyThresholdImageFilter : 
+class ITK_EXPORT ShanbhagThresholdImageFilter : 
     public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard Self typedef */
-  typedef MaxEntropyThresholdImageFilter                      Self;
+  typedef ShanbhagThresholdImageFilter                      Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage>  Superclass;
   typedef SmartPointer<Self>                            Pointer;
   typedef SmartPointer<const Self>                      ConstPointer;
@@ -39,7 +39,7 @@ public:
   itkNewMacro(Self);  
 
   /** Runtime information support. */
-  itkTypeMacro(MaxEntropyThresholdImageFilter, ImageToImageFilter);
+  itkTypeMacro(ShanbhagThresholdImageFilter, ImageToImageFilter);
   
   /** Image pixel value typedef. */
   typedef typename TInputImage::PixelType   InputPixelType;
@@ -96,28 +96,27 @@ public:
   /** End concept checking */
 #endif
 protected:
-  MaxEntropyThresholdImageFilter();
-  ~MaxEntropyThresholdImageFilter(){};
+  ShanbhagThresholdImageFilter();
+  ~ShanbhagThresholdImageFilter(){};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   void GenerateInputRequestedRegion();
   void GenerateData ();
 
 private:
-  MaxEntropyThresholdImageFilter(const Self&); //purposely not implemented
+  ShanbhagThresholdImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
   InputPixelType      m_Threshold;
   OutputPixelType     m_InsideValue;
   OutputPixelType     m_OutsideValue;
   unsigned long       m_NumberOfHistogramBins;
-
 }; // end of class
 
 } // end namespace itk
   
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkMaxEntropyThresholdImageFilter.txx"
+#include "itkShanbhagThresholdImageFilter.txx"
 #endif
 
 #endif

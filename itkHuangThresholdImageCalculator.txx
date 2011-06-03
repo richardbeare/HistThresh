@@ -22,8 +22,6 @@ HuangThresholdImageCalculator<TInputImage>
   m_Threshold = NumericTraits<PixelType>::Zero;
   m_NumberOfHistogramBins = 128;
   m_RegionSetByUser = false;
-  m_LowThresh=0.01;
-  m_HighThresh=0.99;
 }
 
 
@@ -63,21 +61,9 @@ HuangThresholdImageCalculator<TInputImage>
 
   // create a histogram
   std::vector<double> relativeFrequency;
-  std::vector<double> cumSum;
-  std::vector<double> triangle;
   relativeFrequency.resize( m_NumberOfHistogramBins );
-  cumSum.resize( m_NumberOfHistogramBins );
-  triangle.resize( m_NumberOfHistogramBins );
 
   std::fill(relativeFrequency.begin(), relativeFrequency.end(), 0.0);
-  std::fill(cumSum.begin(), cumSum.end(), 0.0);
-  std::fill(triangle.begin(), triangle.end(), 0.0);
-
-  // for ( j = 0; j < m_NumberOfHistogramBins; j++ )
-  //   {
-  //   relativeFrequency[j] = 0.0;
-  //   cumSum[j]=0.0;
-  //   }
 
   double binMultiplier = (double) m_NumberOfHistogramBins /
     (double) ( imageMax - imageMin );

@@ -85,15 +85,6 @@ public:
   /** Get the computed threshold. */
   itkGetConstMacro(Threshold,InputPixelType);
 
-  /** Rank for the robust estimation of maximum and minimum histogram
-  values - default 0.01 and 0.99 */
-  itkSetClampMacro(LowThresh, double, 0.0, 1.0);
-  itkGetConstMacro(LowThresh, double);
-
-  itkSetClampMacro(HighThresh, double, 0.0, 1.0);
-  itkGetConstMacro(HighThresh, double);
-
-
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro(OutputEqualityComparableCheck,
@@ -120,8 +111,6 @@ private:
   OutputPixelType     m_InsideValue;
   OutputPixelType     m_OutsideValue;
   unsigned long       m_NumberOfHistogramBins;
-  double              m_LowThresh;
-  double              m_HighThresh;
 
 }; // end of class
 

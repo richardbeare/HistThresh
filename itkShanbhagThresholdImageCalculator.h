@@ -1,6 +1,6 @@
 
-#ifndef __itkHuangThresholdImageCalculator_h
-#define __itkHuangThresholdImageCalculator_h
+#ifndef __itkShanbhagThresholdImageCalculator_h
+#define __itkShanbhagThresholdImageCalculator_h
 
 #include "itkObject.h"
 #include "itkObjectFactory.h"
@@ -9,16 +9,12 @@
 namespace itk
 {
 
-/** \class HuangThresholdImageCalculator
- * \brief Computes the Huang's threshold for an image.
- * 
- * This calculator computes the Huang's fuzzy threshold which separates an image
- * into foreground and background components. Uses Shannon's entropy
- * function (one can also use Yager's entropy function)  
- * Huang L.-K. and Wang M.-J.J. (1995) "Image Thresholding by Minimizing  
- * the Measures of Fuzziness" Pattern Recognition, 28(1): 41-51
- * Reimplemented (to handle 16-bit efficiently) by Johannes Schindelin Jan 31, 2011
-
+/** \class ShanbhagThresholdImageCalculator
+ * \brief Computes the Shanbhag's threshold for an image.
+ *
+ * Shanhbag A.G. (1994) "Utilization of Information Measure as a Means of
+ * Image Thresholding" Graphical Models and Image Processing, 56(5): 414-419
+ * Ported to ImageJ plugin by G.Landini from E Celebi's fourier_0.8 routines
  * Ported from the ImageJ implementation. http://pacific.mpi-cbg.de/wiki/index.php/Auto_Threshold
  *
  * This class is templated over the input image type.
@@ -29,11 +25,11 @@ namespace itk
  * \ingroup Operators
  */
 template <class TInputImage>
-class ITK_EXPORT HuangThresholdImageCalculator : public Object 
+class ITK_EXPORT ShanbhagThresholdImageCalculator : public Object 
 {
 public:
   /** Standard class typedefs. */
-  typedef HuangThresholdImageCalculator Self;
+  typedef ShanbhagThresholdImageCalculator Self;
   typedef Object                       Superclass;
   typedef SmartPointer<Self>           Pointer;
   typedef SmartPointer<const Self>     ConstPointer;
@@ -42,7 +38,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(HuangThresholdImageCalculator, Object);
+  itkTypeMacro(ShanbhagThresholdImageCalculator, Object);
 
   /** Type definition for the input image. */
   typedef TInputImage  ImageType;
@@ -62,10 +58,10 @@ public:
   /** Set the input image. */
   itkSetConstObjectMacro(Image,ImageType);
 
-  /** Compute the Huang's threshold for the input image. */
+  /** Compute the Shanbhag's threshold for the input image. */
   void Compute(void);
 
-  /** Return the Huang's threshold value. */
+  /** Return the Shanbhag's threshold value. */
   itkGetConstMacro(Threshold,PixelType);
   
   /** Set/Get the number of histogram bins. Default is 128. */
@@ -73,16 +69,17 @@ public:
                     NumericTraits<unsigned long>::max() );
   itkGetConstMacro( NumberOfHistogramBins, unsigned long );
 
+
   /** Set the region over which the values will be computed */
   void SetRegion( const RegionType & region );
 
 protected:
-  HuangThresholdImageCalculator();
-  virtual ~HuangThresholdImageCalculator() {};
+  ShanbhagThresholdImageCalculator();
+  virtual ~ShanbhagThresholdImageCalculator() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:
-  HuangThresholdImageCalculator(const Self&); //purposely not implemented
+  ShanbhagThresholdImageCalculator(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   
   PixelType            m_Threshold;
@@ -97,7 +94,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkHuangThresholdImageCalculator.txx"
+#include "itkShanbhagThresholdImageCalculator.txx"
 #endif
 
 #endif

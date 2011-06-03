@@ -22,8 +22,6 @@ LiThresholdImageCalculator<TInputImage>
   m_Threshold = NumericTraits<PixelType>::Zero;
   m_NumberOfHistogramBins = 128;
   m_RegionSetByUser = false;
-  m_LowThresh=0.01;
-  m_HighThresh=0.99;
 }
 
 

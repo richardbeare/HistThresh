@@ -79,12 +79,6 @@ public:
   itkGetConstMacro( NumberOfHistogramBins, unsigned long );
 
 
-  itkSetClampMacro(LowThresh, double, 0.0, 1.0);
-  itkGetConstMacro(LowThresh, double);
-
-  itkSetClampMacro(HighThresh, double, 0.0, 1.0);
-  itkGetConstMacro(HighThresh, double);
-
   /** Set the region over which the values will be computed */
   void SetRegion( const RegionType & region );
 
@@ -98,8 +92,6 @@ private:
   void operator=(const Self&); //purposely not implemented
   
   PixelType            m_Threshold;
-  double               m_LowThresh;
-  double               m_HighThresh;
   unsigned long        m_NumberOfHistogramBins;
   ImageConstPointer    m_Image;
   RegionType           m_Region;
