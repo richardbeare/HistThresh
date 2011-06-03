@@ -1,35 +1,36 @@
-#ifndef __itkTriangleThresholdImageFilter_h
-#define __itkTriangleThresholdImageFilter_h
+
+#ifndef __itkMaxEntropyThresholdImageFilter_h
+#define __itkMaxEntropyThresholdImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include "itkFixedArray.h"
 
 namespace itk {
 
-/** \class TriangleThresholdImageFilter 
- * \brief Threshold an image using the Triangle Threshold
+/** \class MaxEntropyThresholdImageFilter 
+ * \brief Threshold an image using the MaxEntropy Threshold
  *
  * This filter creates a binary thresholded image that separates an
  * image into foreground and background components. The filter
- * computes the threshold using the TriangleThresholdImageCalculator and
+ * computes the threshold using the MaxEntropyThresholdImageCalculator and
  * applies that theshold to the input image using the
  * BinaryThresholdImageFilter. The NunberOfHistogram bins can be set
  * for the Calculator. The InsideValue and OutsideValue can be set
  * for the BinaryThresholdImageFilter. Code derived from OtsuThresholdImageFilter
  *
- * \sa TriangleThresholdImageCalculator
+ * \sa MaxEntropyThresholdImageCalculator
  * \sa BinaryThresholdImageFilter 
  * \sa OtsuThresholdImageFilter
  * \ingroup IntensityImageFilters  Multithreaded
  */
 
 template<class TInputImage, class TOutputImage>
-class ITK_EXPORT TriangleThresholdImageFilter : 
+class ITK_EXPORT MaxEntropyThresholdImageFilter : 
     public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard Self typedef */
-  typedef TriangleThresholdImageFilter                      Self;
+  typedef MaxEntropyThresholdImageFilter                      Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage>  Superclass;
   typedef SmartPointer<Self>                            Pointer;
   typedef SmartPointer<const Self>                      ConstPointer;
@@ -38,7 +39,7 @@ public:
   itkNewMacro(Self);  
 
   /** Runtime information support. */
-  itkTypeMacro(TriangleThresholdImageFilter, ImageToImageFilter);
+  itkTypeMacro(MaxEntropyThresholdImageFilter, ImageToImageFilter);
   
   /** Image pixel value typedef. */
   typedef typename TInputImage::PixelType   InputPixelType;
@@ -104,15 +105,15 @@ public:
   /** End concept checking */
 #endif
 protected:
-  TriangleThresholdImageFilter();
-  ~TriangleThresholdImageFilter(){};
+  MaxEntropyThresholdImageFilter();
+  ~MaxEntropyThresholdImageFilter(){};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   void GenerateInputRequestedRegion();
   void GenerateData ();
 
 private:
-  TriangleThresholdImageFilter(const Self&); //purposely not implemented
+  MaxEntropyThresholdImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
   InputPixelType      m_Threshold;
@@ -127,7 +128,7 @@ private:
 } // end namespace itk
   
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTriangleThresholdImageFilter.txx"
+#include "itkMaxEntropyThresholdImageFilter.txx"
 #endif
 
 #endif

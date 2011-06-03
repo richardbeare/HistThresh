@@ -1,7 +1,8 @@
-#ifndef __itkTriangleThresholdImageCalculator_txx
-#define __itkTriangleThresholdImageCalculator_txx
 
-#include "itkTriangleThresholdImageCalculator.h"
+#ifndef __itkHuangThresholdImageCalculator_txx
+#define __itkHuangThresholdImageCalculator_txx
+
+#include "itkHuangThresholdImageCalculator.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkMinimumMaximumImageCalculator.h"
 
@@ -14,8 +15,8 @@ namespace itk
  * Constructor
  */
 template<class TInputImage>
-TriangleThresholdImageCalculator<TInputImage>
-::TriangleThresholdImageCalculator()
+HuangThresholdImageCalculator<TInputImage>
+::HuangThresholdImageCalculator()
 {
   m_Image = NULL;
   m_Threshold = NumericTraits<PixelType>::Zero;
@@ -27,15 +28,13 @@ TriangleThresholdImageCalculator<TInputImage>
 
 
 /*
- * Compute the Triangle's threshold
+ * Compute the Huang's threshold
  */
 template<class TInputImage>
 void
-TriangleThresholdImageCalculator<TInputImage>
+HuangThresholdImageCalculator<TInputImage>
 ::Compute(void)
 {
-
-  unsigned int j;
 
   if ( !m_Image ) { return; }
   if( !m_RegionSetByUser )
@@ -109,99 +108,69 @@ TriangleThresholdImageCalculator<TInputImage>
 
     }
 
-  // Triangle method needs the maximum and minimum indexes
-  // Minimum indexes for this purpose are poorly defined - can't just
-  // take a index with zero entries.
-  double Mx = itk::NumericTraits<double>::min();
-  unsigned long MxIdx=0;
+  // find first and last non-empty bin - could replace with stl
+  int first, last;
+  for (first = 0; (unsigned)first < relativeFrequency.size() && relativeFrequency[first] == 0; first++); // do nothing
+  for (last = relativeFrequency.size() - 1; last > first && relativeFrequency[last] == 0; last--); // do nothing
 
-  for ( j = 0; j < m_NumberOfHistogramBins; j++ )
+
+  if (first == last)
     {
-    //std::cout << relativeFrequency[j] << std::endl;
-    if (relativeFrequency[j] > Mx)
-      {
-      MxIdx=j;
-      Mx=relativeFrequency[j];
-      }
+    itkWarningMacro(<< "No data in histogram");
+    return;
     }
+  // calculate the cumulative density and the weighted cumulative density
+  std::vector<double> S(last+1);
+  std::vector<double> W(last+1);
 
+  S[0] = relativeFrequency[0];
 
-  cumSum[0]=relativeFrequency[0];
-  for ( j = 1; j < m_NumberOfHistogramBins; j++ )
+  for (int i = std::max(1, first); i <= last; i++) 
     {
-    cumSum[j] = relativeFrequency[j] + cumSum[j-1];
+    S[i] = S[i - 1] + relativeFrequency[i];
+    W[i] = W[i - 1] + i * relativeFrequency[i];
     }
-
-
-  double total = cumSum[m_NumberOfHistogramBins - 1];
-  // find 1% and 99% levels
-  double onePC = total * m_LowThresh;
-  unsigned onePCIdx=0;
-  for (j=0; j < m_NumberOfHistogramBins; j++ )
-    {
-    if (cumSum[j] > onePC)
-      {
-      onePCIdx = j;
-      break;
-      }
-    }
-
-  double nnPC = total * m_HighThresh;
-  unsigned nnPCIdx=m_NumberOfHistogramBins;
-  for (j=0; j < m_NumberOfHistogramBins; j++ )
-    {
-    if (cumSum[j] > nnPC)
-      {
-      nnPCIdx = j;
-      break;
-      }
-    }
-
-
   
-  // figure out which way we are looking - we want to construct our
-  // line between the max index and the further of 1% and 99%
-  unsigned ThreshIdx=0;
-  if (fabs((float)MxIdx - (float)onePCIdx) > fabs((float)MxIdx - (float)nnPCIdx))
-    {
-    // line to 1 %
-    double slope = Mx/(MxIdx - onePCIdx);
-    for (unsigned k=onePCIdx; k<MxIdx; k++)
-      {
-      float line = (slope*(k-onePCIdx));
-      triangle[k]= line - relativeFrequency[k];
-      // std::cout << relativeFrequency[k] << "," << line << "," << triangle[k] << std::endl;
-      }
+  // precalculate the summands of the entropy given the absolute difference x - mu (integral)
+  double C = last - first;
+  std::vector<double> Smu(last + 1 - first);
 
-    ThreshIdx = onePCIdx + std::distance(&(triangle[onePCIdx]), std::max_element(&(triangle[onePCIdx]), &(triangle[MxIdx]))) ;
-    }
-  else
+  for (int i = 1; (unsigned)i < Smu.size(); i++) 
     {
-    // line to 99 %
-    double slope = -Mx/(nnPCIdx - MxIdx);
-    for (unsigned k=MxIdx; k < nnPCIdx; k++)
-      {
-      float line = (slope*(k-MxIdx) + Mx);
-      triangle[k]= line - relativeFrequency[k];
-//      std::cout << relativeFrequency[k] << "," << line << "," << triangle[k] << std::endl;
-      }
-    ThreshIdx = MxIdx + std::distance(&(triangle[MxIdx]), std::max_element(&(triangle[MxIdx]), &(triangle[nnPCIdx]))) ;
+    double mu = 1 / (1 + vcl_abs(i) / C);
+    Smu[i] = -mu * vcl_log(mu) - (1 - mu) * vcl_log(1 - mu);
     }
+  
+  // calculate the threshold
+  int bestThreshold = 0;
+  double bestEntropy = itk::NumericTraits<double>::max();
+  for (int threshold = first; threshold <= last; threshold++) 
+    {
+    double entropy = 0;
+    int mu = (int)round(W[threshold] / S[threshold]);
+    for (int i = first; i <= threshold; i++)
+      entropy += Smu[vcl_abs(i - mu)] * relativeFrequency[i];
+    mu = (int)round((W[last] - W[threshold]) / (S[last] - S[threshold]));
+    for (int i = threshold + 1; i <= last; i++)
+      entropy += Smu[vcl_abs(i - mu)] * relativeFrequency[i];
+  
+    if (bestEntropy > entropy) 
+      {
+      bestEntropy = entropy;
+      bestThreshold = threshold;
+      }
+    }
+
 
   m_Threshold = static_cast<PixelType>( imageMin + 
-                                        ( ThreshIdx + 1 ) / binMultiplier );
+                                        ( bestThreshold ) / binMultiplier );
 
-
-  // for (unsigned k = 0; k < m_NumberOfHistogramBins ; k++)
-  //   {
-  //   std::cout << relativeFrequency[k] << std::endl;
-  //   }
 
 }
 
 template<class TInputImage>
 void
-TriangleThresholdImageCalculator<TInputImage>
+HuangThresholdImageCalculator<TInputImage>
 ::SetRegion( const RegionType & region )
 {
   m_Region = region;
@@ -211,7 +180,7 @@ TriangleThresholdImageCalculator<TInputImage>
   
 template<class TInputImage>
 void
-TriangleThresholdImageCalculator<TInputImage>
+HuangThresholdImageCalculator<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);

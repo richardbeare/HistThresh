@@ -1,5 +1,6 @@
-#ifndef __itkTriangleThresholdImageCalculator_h
-#define __itkTriangleThresholdImageCalculator_h
+
+#ifndef __itkHuangThresholdImageCalculator_h
+#define __itkHuangThresholdImageCalculator_h
 
 #include "itkObject.h"
 #include "itkObjectFactory.h"
@@ -8,29 +9,31 @@
 namespace itk
 {
 
-/** \class TriangleThresholdImageCalculator
- * \brief Computes the Triangle's threshold for an image.
+/** \class HuangThresholdImageCalculator
+ * \brief Computes the Huang's threshold for an image.
  * 
- * This calculator computes the Triangle's threshold which separates an image
- * into foreground and background components. The method relies on a
- * histogram of image intensities. A line is drawn between the peak
- * point in the hist and the furthest zero point (robustly estimated
- * as the 1% or 99% point). The threshold is the position of maximum
- * difference between the line and the original histogram.
+ * This calculator computes the Huang's fuzzy threshold which separates an image
+ * into foreground and background components. Uses Shannon's entropy
+ * function (one can also use Yager's entropy function)  
+ * Huang L.-K. and Wang M.-J.J. (1995) "Image Thresholding by Minimizing  
+ * the Measures of Fuzziness" Pattern Recognition, 28(1): 41-51
+ * Reimplemented (to handle 16-bit efficiently) by Johannes Schindelin Jan 31, 2011
+
+ * Ported from the ImageJ implementation. 
  *
  * This class is templated over the input image type.
- *
+ * \author Richard Beare
  * \warning This method assumes that the input image consists of scalar pixel
  * types.
  *
  * \ingroup Operators
  */
 template <class TInputImage>
-class ITK_EXPORT TriangleThresholdImageCalculator : public Object 
+class ITK_EXPORT HuangThresholdImageCalculator : public Object 
 {
 public:
   /** Standard class typedefs. */
-  typedef TriangleThresholdImageCalculator Self;
+  typedef HuangThresholdImageCalculator Self;
   typedef Object                       Superclass;
   typedef SmartPointer<Self>           Pointer;
   typedef SmartPointer<const Self>     ConstPointer;
@@ -39,7 +42,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(TriangleThresholdImageCalculator, Object);
+  itkTypeMacro(HuangThresholdImageCalculator, Object);
 
   /** Type definition for the input image. */
   typedef TInputImage  ImageType;
@@ -59,10 +62,10 @@ public:
   /** Set the input image. */
   itkSetConstObjectMacro(Image,ImageType);
 
-  /** Compute the Triangle's threshold for the input image. */
+  /** Compute the Huang's threshold for the input image. */
   void Compute(void);
 
-  /** Return the Triangle's threshold value. */
+  /** Return the Huang's threshold value. */
   itkGetConstMacro(Threshold,PixelType);
   
   /** Set/Get the number of histogram bins. Default is 128. */
@@ -81,12 +84,12 @@ public:
   void SetRegion( const RegionType & region );
 
 protected:
-  TriangleThresholdImageCalculator();
-  virtual ~TriangleThresholdImageCalculator() {};
+  HuangThresholdImageCalculator();
+  virtual ~HuangThresholdImageCalculator() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:
-  TriangleThresholdImageCalculator(const Self&); //purposely not implemented
+  HuangThresholdImageCalculator(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   
   PixelType            m_Threshold;
@@ -103,7 +106,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTriangleThresholdImageCalculator.txx"
+#include "itkHuangThresholdImageCalculator.txx"
 #endif
 
 #endif

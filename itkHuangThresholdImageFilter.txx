@@ -1,16 +1,16 @@
-#ifndef __itkTriangleThresholdImageFilter_txx
-#define __itkTriangleThresholdImageFilter_txx
-#include "itkTriangleThresholdImageFilter.h"
+#ifndef __itkHuangThresholdImageFilter_txx
+#define __itkHuangThresholdImageFilter_txx
+#include "itkHuangThresholdImageFilter.h"
 
 #include "itkBinaryThresholdImageFilter.h"
-#include "itkTriangleThresholdImageCalculator.h"
+#include "itkHuangThresholdImageCalculator.h"
 #include "itkProgressAccumulator.h"
 
 namespace itk {
 
 template<class TInputImage, class TOutputImage>
-TriangleThresholdImageFilter<TInputImage, TOutputImage>
-::TriangleThresholdImageFilter()
+HuangThresholdImageFilter<TInputImage, TOutputImage>
+::HuangThresholdImageFilter()
 {
   m_OutsideValue   = NumericTraits<OutputPixelType>::Zero;
   m_InsideValue    = NumericTraits<OutputPixelType>::max();
@@ -22,15 +22,15 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void
-TriangleThresholdImageFilter<TInputImage, TOutputImage>
+HuangThresholdImageFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
   typename ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);
 
-  // Compute the Triangle Threshold for the input image
-  typename TriangleThresholdImageCalculator<TInputImage>::Pointer triang =
-    TriangleThresholdImageCalculator<TInputImage>::New();
+  // Compute the Huang Threshold for the input image
+  typename HuangThresholdImageCalculator<TInputImage>::Pointer triang =
+    HuangThresholdImageCalculator<TInputImage>::New();
   triang->SetImage (this->GetInput());
   triang->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
   triang->SetLowThresh(m_LowThresh);
@@ -55,7 +55,7 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void
-TriangleThresholdImageFilter<TInputImage, TOutputImage>
+HuangThresholdImageFilter<TInputImage, TOutputImage>
 ::GenerateInputRequestedRegion()
 {
   TInputImage * input = const_cast<TInputImage *>(this->GetInput());
@@ -67,7 +67,7 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void 
-TriangleThresholdImageFilter<TInputImage,TOutputImage>
+HuangThresholdImageFilter<TInputImage,TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);

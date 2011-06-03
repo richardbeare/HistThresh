@@ -1,5 +1,6 @@
-#ifndef __itkTriangleThresholdImageCalculator_h
-#define __itkTriangleThresholdImageCalculator_h
+
+#ifndef __itkMaxEntropyThresholdImageCalculator_h
+#define __itkMaxEntropyThresholdImageCalculator_h
 
 #include "itkObject.h"
 #include "itkObjectFactory.h"
@@ -8,29 +9,34 @@
 namespace itk
 {
 
-/** \class TriangleThresholdImageCalculator
- * \brief Computes the Triangle's threshold for an image.
+/** \class MaxEntropyThresholdImageCalculator
+ * \brief Computes the MaxEntropy's threshold for an image.
  * 
- * This calculator computes the Triangle's threshold which separates an image
- * into foreground and background components. The method relies on a
- * histogram of image intensities. A line is drawn between the peak
- * point in the hist and the furthest zero point (robustly estimated
- * as the 1% or 99% point). The threshold is the position of maximum
- * difference between the line and the original histogram.
+ *
+ * Implements Kapur-Sahoo-Wong (Maximum Entropy) thresholding method
+ * Kapur J.N., Sahoo P.K., and Wong A.K.C. (1985) "A New Method for
+ * Gray-Level Picture Thresholding Using the Entropy of the Histogram"
+ * Graphical Models and Image Processing, 29(3): 273-285
+ * M. Emre Celebi
+ * 06.15.2007
+ * Ported to ImageJ plugin by G.Landini from E Celebi's fourier_0.8 routines
+ *
+ *
+ * Ported from the ImageJ implementation. 
  *
  * This class is templated over the input image type.
- *
+ * \author Richard Beare
  * \warning This method assumes that the input image consists of scalar pixel
  * types.
  *
  * \ingroup Operators
  */
 template <class TInputImage>
-class ITK_EXPORT TriangleThresholdImageCalculator : public Object 
+class ITK_EXPORT MaxEntropyThresholdImageCalculator : public Object 
 {
 public:
   /** Standard class typedefs. */
-  typedef TriangleThresholdImageCalculator Self;
+  typedef MaxEntropyThresholdImageCalculator Self;
   typedef Object                       Superclass;
   typedef SmartPointer<Self>           Pointer;
   typedef SmartPointer<const Self>     ConstPointer;
@@ -39,7 +45,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(TriangleThresholdImageCalculator, Object);
+  itkTypeMacro(MaxEntropyThresholdImageCalculator, Object);
 
   /** Type definition for the input image. */
   typedef TInputImage  ImageType;
@@ -59,10 +65,10 @@ public:
   /** Set the input image. */
   itkSetConstObjectMacro(Image,ImageType);
 
-  /** Compute the Triangle's threshold for the input image. */
+  /** Compute the MaxEntropy's threshold for the input image. */
   void Compute(void);
 
-  /** Return the Triangle's threshold value. */
+  /** Return the MaxEntropy's threshold value. */
   itkGetConstMacro(Threshold,PixelType);
   
   /** Set/Get the number of histogram bins. Default is 128. */
@@ -81,12 +87,12 @@ public:
   void SetRegion( const RegionType & region );
 
 protected:
-  TriangleThresholdImageCalculator();
-  virtual ~TriangleThresholdImageCalculator() {};
+  MaxEntropyThresholdImageCalculator();
+  virtual ~MaxEntropyThresholdImageCalculator() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:
-  TriangleThresholdImageCalculator(const Self&); //purposely not implemented
+  MaxEntropyThresholdImageCalculator(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   
   PixelType            m_Threshold;
@@ -103,7 +109,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTriangleThresholdImageCalculator.txx"
+#include "itkMaxEntropyThresholdImageCalculator.txx"
 #endif
 
 #endif

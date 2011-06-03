@@ -1,16 +1,16 @@
-#ifndef __itkTriangleThresholdImageFilter_txx
-#define __itkTriangleThresholdImageFilter_txx
-#include "itkTriangleThresholdImageFilter.h"
+#ifndef __itkLiThresholdImageFilter_txx
+#define __itkLiThresholdImageFilter_txx
+#include "itkLiThresholdImageFilter.h"
 
 #include "itkBinaryThresholdImageFilter.h"
-#include "itkTriangleThresholdImageCalculator.h"
+#include "itkLiThresholdImageCalculator.h"
 #include "itkProgressAccumulator.h"
 
 namespace itk {
 
 template<class TInputImage, class TOutputImage>
-TriangleThresholdImageFilter<TInputImage, TOutputImage>
-::TriangleThresholdImageFilter()
+LiThresholdImageFilter<TInputImage, TOutputImage>
+::LiThresholdImageFilter()
 {
   m_OutsideValue   = NumericTraits<OutputPixelType>::Zero;
   m_InsideValue    = NumericTraits<OutputPixelType>::max();
@@ -22,15 +22,15 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void
-TriangleThresholdImageFilter<TInputImage, TOutputImage>
+LiThresholdImageFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
   typename ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);
 
-  // Compute the Triangle Threshold for the input image
-  typename TriangleThresholdImageCalculator<TInputImage>::Pointer triang =
-    TriangleThresholdImageCalculator<TInputImage>::New();
+  // Compute the Li Threshold for the input image
+  typename LiThresholdImageCalculator<TInputImage>::Pointer triang =
+    LiThresholdImageCalculator<TInputImage>::New();
   triang->SetImage (this->GetInput());
   triang->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
   triang->SetLowThresh(m_LowThresh);
@@ -55,7 +55,7 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void
-TriangleThresholdImageFilter<TInputImage, TOutputImage>
+LiThresholdImageFilter<TInputImage, TOutputImage>
 ::GenerateInputRequestedRegion()
 {
   TInputImage * input = const_cast<TInputImage *>(this->GetInput());
@@ -67,7 +67,7 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
 
 template<class TInputImage, class TOutputImage>
 void 
-TriangleThresholdImageFilter<TInputImage,TOutputImage>
+LiThresholdImageFilter<TInputImage,TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
