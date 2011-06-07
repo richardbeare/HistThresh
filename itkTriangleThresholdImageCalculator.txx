@@ -109,6 +109,15 @@ TriangleThresholdImageCalculator<TInputImage>
 
     }
 
+  if (this->GetDebug())
+    {
+    for (unsigned i = 0;i < m_NumberOfHistogramBins; i++)
+      {
+      double count = relativeFrequency[i];
+      double bin = ( imageMin + ( i + 1 ) / binMultiplier );
+      std::cout << bin << "," << count << std::endl;
+      }
+    }
   // Triangle method needs the maximum and minimum indexes
   // Minimum indexes for this purpose are poorly defined - can't just
   // take a index with zero entries.

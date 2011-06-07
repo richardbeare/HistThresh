@@ -8,7 +8,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.4.2)
 INCLUDE(CPack)
 
 # set the name of the input image used to run the test
-SET(INPUT_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/images/cthead1.tif)
+SET(INPUT_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/images/cthead1.png)
 
 #include some macros from another file...
 INCLUDE(IJMacros.txt)
@@ -95,7 +95,7 @@ ADD_TEST(testTriangle ${TEST_COMMAND}
 )
 
 ADD_TEST(testIntermodes ${TEST_COMMAND}
-   testIntermodes ${INPUT_IMAGE} outIntermodes.png
+   testIntermodes ${INPUT_IMAGE} outIntermodes.png outMinimum.png
 )
 ADD_TEST(testKittlerIllingworth ${TEST_COMMAND}
    testKittlerIllingworth ${INPUT_IMAGE} outKittlerIllingworth.png

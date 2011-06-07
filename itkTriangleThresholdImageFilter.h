@@ -92,7 +92,6 @@ public:
   itkSetClampMacro(HighThresh, double, 0.0, 1.0);
   itkGetConstMacro(HighThresh, double);
 
-
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro(OutputEqualityComparableCheck,

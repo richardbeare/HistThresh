@@ -31,6 +31,10 @@ TriangleThresholdImageFilter<TInputImage, TOutputImage>
   // Compute the Triangle Threshold for the input image
   typename TriangleThresholdImageCalculator<TInputImage>::Pointer calculator =
     TriangleThresholdImageCalculator<TInputImage>::New();
+  if (this->GetDebug())
+    {
+    calculator->DebugOn();
+    }
   calculator->SetImage (this->GetInput());
   calculator->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
   calculator->SetLowThresh(m_LowThresh);

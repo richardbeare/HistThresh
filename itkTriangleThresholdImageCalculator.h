@@ -80,6 +80,9 @@ public:
   /** Set the region over which the values will be computed */
   void SetRegion( const RegionType & region );
 
+  itkGetConstMacro(Histogram, std::vector<double>);
+  itkGetConstMacro(BinVals, std::vector<double>);
+
 protected:
   TriangleThresholdImageCalculator();
   virtual ~TriangleThresholdImageCalculator() {};
@@ -96,7 +99,8 @@ private:
   ImageConstPointer    m_Image;
   RegionType           m_Region;
   bool                 m_RegionSetByUser;
-
+  std::vector<double>  m_Histogram;
+  std::vector<double>  m_BinVals;
 };
 
 } // end namespace itk

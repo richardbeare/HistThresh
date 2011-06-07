@@ -26,7 +26,7 @@ int main(int argc, char * argv[])
   Tri->SetInput(raw);
   Tri->SetOutsideValue(1);
   Tri->SetInsideValue(0);
-
+  Tri->DebugOn();
   writeIm<LabImType>(Tri->GetOutput(), argv[2]);
   std::cout << "Triangle threshold: " << (float)Tri->GetThreshold() << std::endl;
   
