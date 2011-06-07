@@ -33,7 +33,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 % The title should be descriptive enough for people to be able to find
 % the relevant document. 
-\title{Histogram thresholding - some missing methods}
+\title{Histogram-based thresholding - some missing methods}
 
 % 
 % NOTE: This is the last number of the "handle" URL that 
@@ -73,11 +73,74 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \noindent
 % The abstract should be a paragraph or two long, and describe the
 % scope of the document.
+Using intensity histograms to estimate image thresholds is a long
+established practice in image processing and image analysis and a wide
+variety of techniques have been developed. Different techniques are
+appropriate for different intensity distributions. This article
+implements a number of standard techniques not currently available in
+ITK.
 \end{abstract}
 
 \IJhandlenote{\IJhandlerIDnumber}
 
 \tableofcontents
+
+\section{Introduction}
+This contribution includes classes for threshold estimation using the
+following methods: Huang\cite{huang1995image},
+Intermodes\cite{prewitt1965analysis},
+Minimum\cite{prewitt1965analysis}, IsoData\cite{ridler1978picture},
+Li\cite{li1993minimum,li1998iterative}, MaxEntropy\cite{kapur1985new},
+KittlerIllingworth\cite{kittler1986minimum},
+Moments\cite{tsai1985moment}, Yen\cite{yen1995new},
+RenyiEntropy\cite{kapur1985new},
+Shanbhag\cite{shanbhag1994utilization} and
+Triangle\cite{zack1977automatic}.
+
+All classes are largely derived from the AutoThresh
+\cite{LandiniImageJ} package for ImageJ. The brief outline below is
+taken from the presentation associated with the
+HistThresh\cite{HistThreshMatlab} matlab toolbox, which was also a
+source of information for the AutoThresh package. The exception is the
+triangle method, that was written before discovery of the AutoThresh
+packge and before this project got slightly out of hand.
+
+\section{Thresholding algorithms}
+The histogram of the standard cthead image, and the thresholds
+estimated by the various methods are shown in Figures \ref{fig:cthead}
+and \ref{fig:thresh}
+\subsection{Huang}
+\subsection{Intermodes}
+Iteratively smooths histogram until only 2 peaks remain. Threshold is
+the midpoint of the two peaks. Not good for histograms with very
+unequal peaks.
+\subsection{Minimum}
+Same as Intermodes, except that threshold is the mimimum point between
+the peaks, rather than midway. This method is part of the {\em
+  itkIntermodeThresholdImageFilter} and is selected using the
+{\em UseIntermodeOff} method.
+\subsection{IsoData}
+
+\subsection{Li}
+\subsection{MaxEntropy}
+
+\subsection{KittlerIllingworth}
+\subsection{Moments}
+Choose threshold such that the binary image has the same first three moments as the grey level image.
+\subsection{Yen}
+\subsection{RenyiEntropy}
+\subsection{Shanbhag}
+\subsection{Triangle}
+
+
+\section{Future improvements}
+All classes in this package were based on the existing ITK
+implementation of the Otsu method. This class does not make use of the
+rich ITK histogram structure, and hence the new classes do not utilize
+it either. There is also a moderate amount of repeated code between
+the different filter and calculator classes. Future work should look
+at refactoring the classes and making better use of the ITK histogram
+tools.
 
 
 % \url{http://www.itk.org}
@@ -111,7 +174,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 
 \bibliographystyle{plain}
-\bibliography{InsightJournal}
+\bibliography{local}
 \nocite{ITKSoftwareGuide}
 
 \end{document}
