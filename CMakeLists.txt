@@ -75,7 +75,7 @@ ENDIF(BUILD_WRAPPERS)
 
 IF(BUILD_TESTING)
 
-FOREACH(CurrentExe "testThresh" "testTriangle" "testIntermodes" "testKittlerIllingworth" "testHuang" "testIsoData" "testLi" "testMaxEntropy" "testMoments" "testRenyiEntropy" "testShanbhag" "testYen")
+FOREACH(CurrentExe "testTriangle" "testIntermodes" "testKittlerIllingworth" "testHuang" "testIsoData" "testLi" "testMaxEntropy" "testMoments" "testRenyiEntropy" "testShanbhag" "testYen")
   ADD_EXECUTABLE(${CurrentExe} ${CurrentExe}.cxx)
   TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
 ENDFOREACH(CurrentExe)
@@ -90,7 +90,35 @@ ENDIF(BUILD_TESTING)
 #any tests you can comment out or delete the following line.
 # ADD_TEST(Testname ExecutableToRun arg1 arg2 arg3)
 
-ADD_TEST(Test ${TEST_COMMAND}
-   check ${INPUT_IMAGE} out.png
-   --compare out.png ${CMAKE_CURRENT_SOURCE_DIR}/images/test.png
+ADD_TEST(testTriangle ${TEST_COMMAND}
+   testTriangle ${INPUT_IMAGE} outTriangle.png
+)
+
+ADD_TEST(testIntermodes ${TEST_COMMAND}
+   testIntermodes ${INPUT_IMAGE} outIntermodes.png
+)
+ADD_TEST(testKittlerIllingworth ${TEST_COMMAND}
+   testKittlerIllingworth ${INPUT_IMAGE} outKittlerIllingworth.png
+)
+ADD_TEST(testHuang ${TEST_COMMAND}
+   testHuang ${INPUT_IMAGE} outHuang.png
+)
+ADD_TEST(testLi ${TEST_COMMAND}
+   testLi ${INPUT_IMAGE} outLi.png
+)
+ADD_TEST(testMaxEntropy ${TEST_COMMAND}
+   testMaxEntropy ${INPUT_IMAGE} outMaxEntropy.png
+)
+ADD_TEST(testMoments ${TEST_COMMAND}
+   testMoments ${INPUT_IMAGE} outMoments.png
+)
+ADD_TEST(testRenyiEntropy ${TEST_COMMAND}
+   testRenyiEntropy ${INPUT_IMAGE} outRenyiEntropy.png
+)
+ADD_TEST(testShanbhag ${TEST_COMMAND}
+   testShanbhag ${INPUT_IMAGE} outShanbhag.png
+)
+
+ADD_TEST(testYen ${TEST_COMMAND}
+   testYen ${INPUT_IMAGE} outYen.png
 )

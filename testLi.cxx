@@ -1,6 +1,4 @@
 #include "ioutils.h"
-#include "morphutils.h"
-#include "rjbutilities.h"
 
 #include "itkLiThresholdImageFilter.h"
 
