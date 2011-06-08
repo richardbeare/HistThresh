@@ -25,7 +25,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 % for pseudo code
 \usepackage{listings}
 % subfigures
-\usepackage{subfigure}
+%\usepackage{subfigure}
 
 
 %  This is a template for Papers to the Insight Journal. 
@@ -110,6 +110,7 @@ The histogram of the standard cthead image, and the thresholds
 estimated by the various methods are shown in Figures \ref{fig:cthead}
 and \ref{fig:thresh}
 \subsection{Huang}
+Huang's fuzzy thresholding using Shannon's entropy function.
 \subsection{Intermodes}
 Iteratively smooths histogram until only 2 peaks remain. Threshold is
 the midpoint of the two peaks. Not good for histograms with very
@@ -120,17 +121,68 @@ the peaks, rather than midway. This method is part of the {\em
   itkIntermodeThresholdImageFilter} and is selected using the
 {\em UseIntermodeOff} method.
 \subsection{IsoData}
+Computes average of voxels below initial threshold and above initial
+threshold. Threshold is set to the average of the two. Repeat until
+the threshold is larger than the composite average.
 
 \subsection{Li}
+Li's minimum cross entropy.
 \subsection{MaxEntropy}
+Choose threshold such that the entropies of distributions above and
+below threshold is maximised. One of several entropy-based approaches.
 
 \subsection{KittlerIllingworth}
+Similar to the Otsu method. Assumes a Gaussian mixture
+model. Minimizes the number of misclassifications between the two
+normal distributions with the given means, variances and proportions.
 \subsection{Moments}
 Choose threshold such that the binary image has the same first three moments as the grey level image.
 \subsection{Yen}
+Maximum correlation criterion.
 \subsection{RenyiEntropy}
+Similar to MaxEntropy, but using a different entropy measure.
 \subsection{Shanbhag}
+Extenstion of the Kapur method.
+
 \subsection{Triangle}
+The triangle method constructs a line between the histogram peak and
+the farthest end of the histogram. The threshold is the point of
+maximum distance between the line and the histogram. This
+implementation uses robust (default is 1\% and 99\%) estimation of histogram ends.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=5cm]{cthead1}
+\caption{The input image.\label{fig:cthead}}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=15cm]{hist_results}
+\caption{Image histogram and thresholds selected by implemented methods.\label{fig:thresh}}
+\end{figure}
+
+\section{Usage}
+The new classes are:
+\begin{itemize}
+\item {\em itkHuangThresholdImageFilter}
+\item {\em itkIntermodesThresholdImageFilter}
+\item {\em itkIsoDataThresholdImageFilter}
+\item {\em itkKittlerIllingworthThresholdImageFilter}
+\item {\em itkLiThresholdImageFilter}
+\item {\em itkMaxEntropyThresholdImageFilter}
+\item {\em itkMomentsThresholdImageFilter}
+\item {\em itkRenyiEntropyThresholdImageFilter}
+\item {\em itkShanbhagThresholdImageFilter}
+\item {\em itkTriangleThresholdImageFilter}
+\item {\em itkYenThresholdImageFilter}
+\end{itemize}
+All classes have methods to set the number of histogram
+bins. Intermodes has a method to select the intermodes or minimum
+selection option.
+
+Simple test functions are provided for all classes. 
+
 
 
 \section{Future improvements}
@@ -142,32 +194,15 @@ the different filter and calculator classes. Future work should look
 at refactoring the classes and making better use of the ITK histogram
 tools.
 
+More informative examples would also be a great advantage.
 
-% \url{http://www.itk.org}
-% \code{Insight/Documentation/Style.pdf}
-% \section{Principles of Solar Spot Detection}
-% \cite{ITKSoftwareGuide}.
-% \doxygen{ImageToImageFilter}
-
-% \small \begin{verbatim}
-% \end{verbatim} \normalsize
-
-
-% The {itemize} environment uses a bullet for each \item.  If you want the 
-% \item's numbered, use the {enumerate} environment instead.
-% \begin{itemize}
-%   \item  Insight Toolkit 2.4.
-%   \item  CMake 2.2
-% \end{itemize}
-
-% \ref{cthead1}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{cthead1}
-\caption{The input image.\label{cthead1}}
-\end{figure}
-
+\section{Conclusions}
+This contribution is a set of standard thresholding methods available
+in other packages. The implementation is derived from both the ImageJ
+java plugin and the ITK Otsu classes. The classes are being made
+available to the user community in a relatively untested and poorly
+documented state.  I hope that someone finds them useful. Additional
+documentation is welcome.
 
 \appendix
 
