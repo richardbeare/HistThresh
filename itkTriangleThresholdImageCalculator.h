@@ -99,8 +99,6 @@ private:
   ImageConstPointer    m_Image;
   RegionType           m_Region;
   bool                 m_RegionSetByUser;
-  std::vector<double>  m_Histogram;
-  std::vector<double>  m_BinVals;
 };
 
 } // end namespace itk
