@@ -199,6 +199,20 @@ tools.
 
 More informative examples would also be a great advantage.
 
+\section{Refactoring for ITK 4}
+Significant recent work has been carried out for ITK 4. All histogram
+calculation methods have been moved to calculator classes - e.g. {\em
+  itkYenThresholdCalculator}. Histograms are created using the {\em
+  ImageToHistogramImageFilter}, thus utilizing the ITK histogram
+facilities. The {\em itkHistogramThresholdingImageFilter} has been
+introduced that includes all threshold calculation methods. The method
+can be selected via the {\em SetThreshMethod} call.
+\begin{verbatim}
+filter->SetThreshMethod(FilterType::HUANG);
+\end{verbatim}
+
+These additions are available in Gerrit:
+
 \section{Conclusions}
 This contribution is a set of standard thresholding methods available
 in other packages. The implementation is derived from both the ImageJ
