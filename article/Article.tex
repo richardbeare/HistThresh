@@ -204,22 +204,27 @@ Significant recent work has been carried out for ITK 4. All histogram
 calculation methods have been moved to calculator classes - e.g. {\em
   itkYenThresholdCalculator}. Histograms are created using the {\em
   ImageToHistogramImageFilter}, thus utilizing the ITK histogram
-facilities. The {\em itkHistogramThresholdingImageFilter} has been
-introduced that includes all threshold calculation methods. The method
-can be selected via the {\em SetThreshMethod} call.
+facilities. All {\em ThresholdImageFilter} classes now share a common
+base class {\em HistogramThresholdingBaseImageFilter}. In addition,
+the {\em itkHistogramThresholdingImageFilter} has been introduced that
+includes all threshold calculation methods. The method can be selected
+via the {\em SetThreshMethod} call.
 \begin{verbatim}
 filter->SetThreshMethod(FilterType::HUANG);
 \end{verbatim}
+This filter may not be retained as the incorporation of multiple
+functionality in this style in a single filter is discouraged.
 
 These additions are available in Gerrit:
 
 \section{Conclusions}
 This contribution is a set of standard thresholding methods available
 in other packages. The implementation is derived from both the ImageJ
-java plugin and the ITK Otsu classes. The classes are being made
-available to the user community in a relatively untested and poorly
-documented state.  I hope that someone finds them useful. Additional
-documentation is welcome.
+java plugin and the ITK Otsu classes. The pre ITK 4.0 classes are
+being made available to the user community in a relatively untested
+and poorly documented state.  I hope that someone finds them
+useful. Testing for the ITK 4.0 submission is much
+improved. Additional documentation is welcome.
 
 \appendix
 
