@@ -49,8 +49,12 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 % At minimum, give your name and an email address.  You can include a
 % snail-mail address if you like.
-\author{Richard Beare}
-\authoraddress{Monash University}
+\author{Richard Beare{$^1$} {\small{and}} Ga\"etan Lehmann{$^2$}}
+\authoraddress{{$^1$}Department of Medicine, Monash University, Australia.\\ 
+{$^2$}INRA, UMR 1198; ENVA; CNRS, FRE 2857, Biologie du D\'eveloppement et 
+Reproduction, Jouy en Josas, F-78350, France}
+
+
 
 \begin{document}
 
@@ -88,8 +92,7 @@ ITK.
 \section{Introduction}
 This contribution includes classes for threshold estimation using the
 following methods: Huang\cite{huang1995image},
-Intermodes\cite{prewitt1965analysis},
-Minimum\cite{prewitt1965analysis}, IsoData\cite{ridler1978picture},
+Intermodes and Minimum\cite{prewitt1965analysis}, IsoData\cite{ridler1978picture},
 Li\cite{li1993minimum,li1998iterative}, MaxEntropy\cite{kapur1985new},
 KittlerIllingworth\cite{kittler1986minimum},
 Moments\cite{tsai1985moment}, Yen\cite{yen1995new},
@@ -105,49 +108,74 @@ source of information for the AutoThresh package. The exception is the
 triangle method, that was written before discovery of the AutoThresh
 packge and before this project got slightly out of hand.
 
-Latest version of this contribution is available via github:
-{\tt git clone git://github.com/richardbeare/HistThresh.git}
+These classes have been included in ITK 4 and are implented using the
+histogram framework.
 
 \section{Thresholding algorithms}
 The histogram of the standard cthead image, and the thresholds
 estimated by the various methods are shown in Figures \ref{fig:cthead}
 and \ref{fig:thresh}
 \subsection{Huang}
-Huang's fuzzy thresholding using Shannon's entropy function.
+{\em itkHuangThresholdImageFilter} implements Huang's fuzzy
+thresholding using Shannon's entropy
+function\cite{huang1995image}. The measure of fuzziness represents the
+difference between the original image and a its binary version. For a
+given threshold level the fuzzy membership function for a pixel is defined by the
+absolute difference between the pixel gray level and the average gray
+level of the region to which it belongs, with a larger difference
+leading to a smaller membership value. The optimal threshold is
+the value that minimizes the fuzziness, as defined by Shannon's
+entropy function applied to the fuzzy membership functions.
+
 \subsection{Intermodes}
-Iteratively smooths histogram until only 2 peaks remain. Threshold is
-the midpoint of the two peaks. Not good for histograms with very
-unequal peaks.
-\subsection{Minimum}
-Same as Intermodes, except that threshold is the mimimum point between
-the peaks, rather than midway. This method is part of the {\em
-  itkIntermodeThresholdImageFilter} and is selected using the
-{\em UseIntermodeOff} method.
+{\em itkIntermodesThresholdImageFilter} implements the methods
+described in \cite{prewitt1965analysis}. The histogram is iteratively
+smoothed until only 2 peaks remain. In one variant the threshold is
+the midpoint of the two peaks, while in the other it is the minimum
+point between the peaks. The two variants are selected using the {\em
+  UseIntermodeOff} method. Not good for histograms with very unequal
+peaks.
 \subsection{IsoData}
+{\em itkIsoDataThresholdImageFilter} implements Ridler and Calvard's
+\cite{ridler1978picture} isodata method. 
 Computes average of voxels below initial threshold and above initial
 threshold. Threshold is set to the average of the two. Repeat until
-the threshold is larger than the composite average.
+the threshold is larger than the average of the brightness of the two regions.
 
 \subsection{Li}
-Li's minimum cross entropy.
+ {\em itkLiThresholdImageFilter} implements Li's minimum cross entropy
+ method\cite{li1993minimum,li1998iterative}. This method selects a
+ threshold that minimizes the cross entropy between original and
+ thresholded images.
 \subsection{MaxEntropy}
-Choose threshold such that the entropies of distributions above and
+ {\em itkMaxEntropyThresholdImageFilter} implements the method
+ described in \cite{kapur1985new}, which chooses a threshold such that the entropies of distributions above and
 below threshold is maximised. One of several entropy-based approaches.
+\subsection{RenyiEntropy}
+{\em itkRenyiEntropyThresholdImageFilter} Similar to MaxEntropy, but using a different entropy measure\cite{kapur1985new}.
 
 \subsection{KittlerIllingworth}
-Similar to the Otsu method. Assumes a Gaussian mixture
-model. Minimizes the number of misclassifications between the two
-normal distributions with the given means, variances and proportions.
+ {\em itkKittlerIllingworthThresholdImageFilter} implements the minimum
+error thresholding method\cite{kittler1986minimum}. A threshold is
+selected that minimizes the number of misclassifications between the
+two normal distributions with the given means, variances and
+proportions. This method assumes a Gaussian mixture model, similar to
+the Otsu method.
 \subsection{Moments}
-Choose threshold such that the binary image has the same first three moments as the grey level image.
+{\em itkMomentsThresholdImageFilter} implements Tsai's moment
+preserving approach \cite{tsai1985moment} that chooses a threshold such that the binary image has the same first three moments as the grey level image.
 \subsection{Yen}
-Maximum correlation criterion.
-\subsection{RenyiEntropy}
-Similar to MaxEntropy, but using a different entropy measure.
+{\em itkYenThresholdImageFilter} implements thresholding based on a
+maximum correlation criterion \cite{yen1995new} as a more
+computationally efficient alternative to entropy measures.
+
 \subsection{Shanbhag}
-Extenstion of the Kapur method.
+ {\em itkShanbhagThresholdImageFilter} implements Shanbhag's
+ extenstion of the Kapur method\cite{shanbhag1994utilization} that
+ includes a distance from the threshold in the entropy measure.
 
 \subsection{Triangle}
+{\em itkTriangleThresholdImageFilter} implements a variant of \cite{zack1977automatic}
 The triangle method constructs a line between the histogram peak and
 the farthest end of the histogram. The threshold is the point of
 maximum distance between the line and the histogram. This
@@ -180,51 +208,23 @@ The new classes are:
 \item {\em itkTriangleThresholdImageFilter}
 \item {\em itkYenThresholdImageFilter}
 \end{itemize}
+
 All classes have methods to set the number of histogram
 bins. Intermodes has a method to select the intermodes or minimum
 selection option.
 
-Simple test functions are provided for all classes. 
+All thresholding classes have an associated calculator class that
+operates on the histogram to estimate the threshold.
 
-
-
-\section{Future improvements}
-All classes in this package were based on the existing ITK
-implementation of the Otsu method. This class does not make use of the
-rich ITK histogram structure, and hence the new classes do not utilize
-it either. There is also a moderate amount of repeated code between
-the different filter and calculator classes. Future work should look
-at refactoring the classes and making better use of the ITK histogram
-tools.
-
-More informative examples would also be a great advantage.
-
-\section{Refactoring for ITK 4}
-Significant recent work has been carried out for ITK 4. All histogram
-calculation methods have been moved to calculator classes - e.g. {\em
-  itkYenThresholdCalculator}. Histograms are created using the {\em
-  ImageToHistogramImageFilter}, thus utilizing the ITK histogram
-facilities. All {\em ThresholdImageFilter} classes now share a common
-base class {\em HistogramThresholdingBaseImageFilter}. In addition,
-the {\em itkHistogramThresholdingImageFilter} has been introduced that
-includes all threshold calculation methods. The method can be selected
-via the {\em SetThreshMethod} call.
-\begin{verbatim}
-filter->SetThreshMethod(FilterType::HUANG);
-\end{verbatim}
-This filter may not be retained as the incorporation of multiple
-functionality in this style in a single filter is discouraged.
-
-These additions are available in Gerrit:
-
-\section{Conclusions}
+\section{Conclusions and further work}
 This contribution is a set of standard thresholding methods available
-in other packages. The implementation is derived from both the ImageJ
-java plugin and the ITK Otsu classes. The pre ITK 4.0 classes are
-being made available to the user community in a relatively untested
-and poorly documented state.  I hope that someone finds them
-useful. Testing for the ITK 4.0 submission is much
-improved. Additional documentation is welcome.
+in other packages. The implementation is derived from the ImageJ
+java plugin. These classes have been included recently in the ITK 4
+distribution via Gerrit and include a variety of tests.
+
+Several of the articles cited describe extensions to the basic methods
+tosupport multi-level thresholding. Hopefully these extensions can be
+implemented in the future.
 
 \appendix
 
