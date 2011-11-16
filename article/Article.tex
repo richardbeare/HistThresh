@@ -25,7 +25,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 % for pseudo code
 \usepackage{listings}
 % subfigures
-%\usepackage{subfigure}
+x\usepackage{subfigure}
 
 
 %  This is a template for Papers to the Insight Journal. 
@@ -109,12 +109,9 @@ triangle method, that was written before discovery of the AutoThresh
 packge and before this project got slightly out of hand.
 
 These classes have been included in ITK 4 and are implented using the
-histogram framework.
+histogram framework. Methods for setting number of histogram bins and 
 
 \section{Thresholding algorithms}
-The histogram of the standard cthead image, and the thresholds
-estimated by the various methods are shown in Figures \ref{fig:cthead}
-and \ref{fig:thresh}
 \subsection{Huang}
 {\em itkHuangThresholdImageFilter} implements Huang's fuzzy
 thresholding using Shannon's entropy
@@ -181,50 +178,74 @@ the farthest end of the histogram. The threshold is the point of
 maximum distance between the line and the histogram. This
 implementation uses robust (default is 1\% and 99\%) estimation of histogram ends.
 
+\section{Results}
+The results for a cropped and smoothed version of the
+BrainProtonDensitySlice image is used to demonstrate the
+results. Smoothing has been applied to avoid the gaps in the histogram
+and cropping has been applied to remove a peak at 0 caused by padding
+in the original.
+
 \begin{figure}[htbp]
 \centering
-\includegraphics[height=5cm]{cthead1}
-\caption{The input image.\label{fig:cthead}}
+\includegraphics[height=5cm]{BrainProtonDensitySliceBorder20}
+\caption{The input image.\label{fig:bpd}}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[height=15cm]{hist_results}
+\subfigure[]{\includegraphics[height=5cm]{BrainProtonDensitySliceBorder20}
+\caption{Thresholded images.\label{fig:bpdthresh}}
+\end{figure}
+
+
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=15cm]{hist_resultsA}
+
+\includegraphics[height=15cm]{hist_resultsB}
+
 \caption{Image histogram and thresholds selected by implemented methods.\label{fig:thresh}}
 \end{figure}
 
-\section{Usage}
-The new classes are:
-\begin{itemize}
-\item {\em itkHuangThresholdImageFilter}
-\item {\em itkIntermodesThresholdImageFilter}
-\item {\em itkIsoDataThresholdImageFilter}
-\item {\em itkKittlerIllingworthThresholdImageFilter}
-\item {\em itkLiThresholdImageFilter}
-\item {\em itkMaxEntropyThresholdImageFilter}
-\item {\em itkMomentsThresholdImageFilter}
-\item {\em itkRenyiEntropyThresholdImageFilter}
-\item {\em itkShanbhagThresholdImageFilter}
-\item {\em itkTriangleThresholdImageFilter}
-\item {\em itkYenThresholdImageFilter}
-\end{itemize}
 
-All classes have methods to set the number of histogram
-bins. Intermodes has a method to select the intermodes or minimum
-selection option.
+\section{Usage}
+These classes can be used in a similar way to the well-established
+{\em OtsuThresholdImageFilter}. Classes are templated over input and
+output image types and have methods to set the output {\em inside} and
+{\em outside} pixel values, the number of histogram bins - {\em
+  SetNumberOfHistogramBins}. Intermodes has a method to select the
+intermodes or minimum selection option - {\em SetUseIntermodes} - and
+the maximum number of smoothing iterations - {\em
+  SetMaximumSmoothingIterations}.
 
 All thresholding classes have an associated calculator class that
-operates on the histogram to estimate the threshold.
+operates on the histogram to estimate the threshold. 
 
-\section{Conclusions and further work}
+\section{Comments, conclusions and further work}
+Histogram-based approaches to estimating thresholds are very useful,
+but also can be surprisingly sensitive to changes in image
+characteristics. Padding images, for example, can easily add a large
+spike to a histogram that can cause unexpected outputs from many
+methods. Underlying assumptions built into some methods, such as
+Gaussian mixture models, can become unrealistic if image acquisition
+conditions (e.g. lighting) change, and such changes are not
+necessarily obvious to the naked eye. Always use with care and always
+attempt to constrain the areas to which such estimation is applied in
+order to minimize the chances of changes in image characteristics
+affecting application performance.
+
 This contribution is a set of standard thresholding methods available
 in other packages. The implementation is derived from the ImageJ
 java plugin. These classes have been included recently in the ITK 4
 distribution via Gerrit and include a variety of tests.
 
 Several of the articles cited describe extensions to the basic methods
-tosupport multi-level thresholding. Hopefully these extensions can be
-implemented in the future.
+to support multi-level thresholding. Additional control of the
+histogramming parameters can also be included. Only the most basic are
+in the current version. Hopefully these extensions can be implemented
+in the future.
 
 \appendix
 
