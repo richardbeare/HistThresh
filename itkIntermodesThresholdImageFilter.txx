@@ -18,6 +18,7 @@ IntermodesThresholdImageFilter<TInputImage, TOutputImage>
   m_NumberOfHistogramBins = 128;
   m_MaxSmoothingIterations = 10000;
   m_UseInterMode = true;
+  m_ModeFraction = 0.5;
 }
 
 template<class TInputImage, class TOutputImage>
@@ -35,6 +36,7 @@ IntermodesThresholdImageFilter<TInputImage, TOutputImage>
   calculator->SetNumberOfHistogramBins (m_NumberOfHistogramBins);
   calculator->SetMaxSmoothingIterations(m_MaxSmoothingIterations);
   calculator->SetUseInterMode(m_UseInterMode);
+  calculator->SetModeFraction(m_ModeFraction);
   calculator->Compute();
   m_Threshold = calculator->GetThreshold();
 

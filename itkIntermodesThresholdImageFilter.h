@@ -86,6 +86,11 @@ public:
   itkSetMacro( UseInterMode, bool);
   itkGetConstMacro( UseInterMode, bool );
 
+  // set the relative position of threshold when
+  // UseInterMode=true. Default is 0.5
+  itkSetMacro( ModeFraction, float);
+  itkGetConstMacro( ModeFraction, float );
+
   /** Get the computed threshold. */
   itkGetConstMacro(Threshold,InputPixelType);
 
@@ -117,7 +122,7 @@ private:
   unsigned long       m_NumberOfHistogramBins;
   unsigned            m_MaxSmoothingIterations;
   bool                m_UseInterMode;
-
+  float               m_ModeFraction;
 
 }; // end of class
 

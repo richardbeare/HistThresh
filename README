@@ -1,0 +1,5 @@
+Original repo for som histogram thresholding methods for ITK
+This repo contains the article and the ITK 3.20 versions of classes.
+These classes have since been ported to ITK 4.0 and are part of the standard 
+distribution.
+

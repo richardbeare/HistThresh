@@ -23,6 +23,7 @@ IntermodesThresholdImageCalculator<TInputImage>
   m_RegionSetByUser = false;
   m_MaxSmoothingIterations = 10000;
   m_UseInterMode = true;
+  m_ModeFraction = 0.5;
 }
 template<class TInputImage>
 bool
@@ -154,7 +155,7 @@ IntermodesThresholdImageCalculator<TInputImage>
       }
     
     m_Threshold = static_cast<PixelType>( imageMin + 
-					  ( tt/2.0 ) / binMultiplier );
+					  ( tt * m_ModeFraction ) / binMultiplier );
     }
   else
     {

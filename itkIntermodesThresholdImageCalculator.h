@@ -85,11 +85,15 @@ public:
   itkSetMacro( MaxSmoothingIterations, unsigned long);
   itkGetConstMacro( MaxSmoothingIterations, unsigned long );
 
-  /** select whether midpoint (intermode=true) or minimum between
+  /** select whether fraction (default is midpoint) (intermode=true) or minimum between
   peaks is used */
   itkSetMacro( UseInterMode, bool);
   itkGetConstMacro( UseInterMode, bool );
 
+  // set the relative position of threshold when
+  // UseInterMode=true. Default is 0.5
+  itkSetMacro( ModeFraction, float);
+  itkGetConstMacro( ModeFraction, float );
 
   /** Set the region over which the values will be computed */
   void SetRegion( const RegionType & region );
@@ -112,6 +116,7 @@ private:
   RegionType           m_Region;
   bool                 m_RegionSetByUser;
   bool                 m_UseInterMode;
+  float                m_ModeFraction;
 
 };
 
