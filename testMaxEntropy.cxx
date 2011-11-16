@@ -1,6 +1,6 @@
 #include "ioutils.h"
 
-#include "itkMaxEntropyThresholdImageFilter.h"
+#include "itkMaximumEntropyThresholdImageFilter.h"
 
 #include <itkSmartPointer.h>
 namespace itk
@@ -24,7 +24,7 @@ int main(int argc, char * argv[])
   RawImType::Pointer raw = readIm<RawImType>(argv[1]);
 
   
-  itk::Instance <itk::MaxEntropyThresholdImageFilter<RawImType, LabImType > > Thr;
+  itk::Instance <itk::MaximumEntropyThresholdImageFilter<RawImType, LabImType > > Thr;
   Thr->SetInput(raw);
   Thr->SetOutsideValue(1);
   Thr->SetInsideValue(0);

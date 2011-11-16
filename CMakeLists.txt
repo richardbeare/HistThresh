@@ -8,7 +8,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.4.2)
 INCLUDE(CPack)
 
 # set the name of the input image used to run the test
-SET(INPUT_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/images/cthead1.png)
+SET(INPUT_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/images/BrainProtonDensitySliceBorder20.tif)
 
 #include some macros from another file...
 INCLUDE(IJMacros.txt)
@@ -40,6 +40,8 @@ ENDFOREACH(Package)
 
 #Set any libraries that your project depends on.
 #examples: ITKCommon, VTKRendering, etc
+IF (ITK_VERSION_MAJOR LESS 4)
+
 SET(Libraries
   ITKCommon
   ITKBasicFilters
@@ -47,6 +49,11 @@ SET(Libraries
   ITKIO
 )
 
+ELSE (ITK_VERSION_MAJOR LESS 4 )
+SET(Libraries
+${ITK_LIBRARIES}
+)
+ENDIF(ITK_VERSION_MAJOR LESS 4)
 
 # install devel files
 OPTION(INSTALL_DEVEL_FILES "Install C++ headers" ON)
@@ -121,4 +128,7 @@ ADD_TEST(testShanbhag ${TEST_COMMAND}
 
 ADD_TEST(testYen ${TEST_COMMAND}
    testYen ${INPUT_IMAGE} outYen.png
+)
+ADD_TEST(testIso ${TEST_COMMAND}
+   testIsoData ${INPUT_IMAGE} outIsoData.png
 )
