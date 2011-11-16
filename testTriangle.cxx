@@ -24,7 +24,7 @@ int main(int argc, char * argv[])
   
   itk::Instance <itk::TriangleThresholdImageFilter<RawImType, LabImType > > Tri;
   Tri->SetInput(raw);
-  Tri->SetOutsideValue(1);
+  Tri->SetOutsideValue(255);
   Tri->SetInsideValue(0);
   Tri->DebugOn();
   writeIm<LabImType>(Tri->GetOutput(), argv[2]);

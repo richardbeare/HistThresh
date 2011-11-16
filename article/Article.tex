@@ -25,7 +25,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 % for pseudo code
 \usepackage{listings}
 % subfigures
-x\usepackage{subfigure}
+\usepackage{subfigure}
 
 
 %  This is a template for Papers to the Insight Journal. 
@@ -179,11 +179,7 @@ maximum distance between the line and the histogram. This
 implementation uses robust (default is 1\% and 99\%) estimation of histogram ends.
 
 \section{Results}
-The results for a cropped and smoothed version of the
-BrainProtonDensitySlice image is used to demonstrate the
-results. Smoothing has been applied to avoid the gaps in the histogram
-and cropping has been applied to remove a peak at 0 caused by padding
-in the original.
+The results for a cropped and smoothed version of the BrainProtonDensitySlice image is used to demonstrate the results. Smoothing has been applied to avoid the gaps in the histogram and cropping has been applied to remove a peak at 0 caused by padding in the original. This is a slightly challenging image to threshold as there are 3 classes, but the two brighter ones overlap. The mode-based approaches, results in Figure \ref{fig:bpdthreshA}, select thresholds between the darkest (background) class and the foreground, thus merging the two foreground classes. Some of the entropy measures, shown in Figure \ref{fig:bpdthreshB}, attempt to split the two foreground classes, with varying degrees of success.
 
 \begin{figure}[htbp]
 \centering
@@ -193,19 +189,32 @@ in the original.
 
 \begin{figure}[htbp]
 \centering
-\subfigure[]{\includegraphics[height=5cm]{BrainProtonDensitySliceBorder20}
-\caption{Thresholded images.\label{fig:bpdthresh}}
+\subfigure[Kittler Illingworth]{\includegraphics[height=5cm]{outKittlerIllingworth}}
+\subfigure[Intermode]{\includegraphics[height=5cm]{outIntermodes}}
+\subfigure[Intermode - minimum]{\includegraphics[height=5cm]{outMinimum}}
+
+\subfigure[IsoData]{\includegraphics[height=5cm]{outIsoData}}
+\subfigure[Monents]{\includegraphics[height=5cm]{outMoments}}
+\subfigure[Triangle]{\includegraphics[height=5cm]{outTriangle}}
+\caption{Thresholded images.\label{fig:bpdthreshA}}
 \end{figure}
-
-
-
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[height=15cm]{hist_resultsA}
+\subfigure[Huang]{\includegraphics[height=5cm]{outHuang}}
+\subfigure[Li]{\includegraphics[height=5cm]{outLi}}
+\subfigure[Maximum Entropy]{\includegraphics[height=5cm]{outMaxEntropy}}
 
-\includegraphics[height=15cm]{hist_resultsB}
+\subfigure[Renyi Entropy]{\includegraphics[height=5cm]{outRenyiEntropy}}
+\subfigure[Yen]{\includegraphics[height=5cm]{outYen}}
+\subfigure[Shanbhag]{\includegraphics[height=5cm]{outShanbhag}}
+\caption{Thresholded images.\label{fig:bpdthreshB}}
+\end{figure}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=10cm]{hist_resultsA}
+\includegraphics[height=10cm]{hist_resultsB}
 \caption{Image histogram and thresholds selected by implemented methods.\label{fig:thresh}}
 \end{figure}
 
@@ -224,28 +233,11 @@ All thresholding classes have an associated calculator class that
 operates on the histogram to estimate the threshold. 
 
 \section{Comments, conclusions and further work}
-Histogram-based approaches to estimating thresholds are very useful,
-but also can be surprisingly sensitive to changes in image
-characteristics. Padding images, for example, can easily add a large
-spike to a histogram that can cause unexpected outputs from many
-methods. Underlying assumptions built into some methods, such as
-Gaussian mixture models, can become unrealistic if image acquisition
-conditions (e.g. lighting) change, and such changes are not
-necessarily obvious to the naked eye. Always use with care and always
-attempt to constrain the areas to which such estimation is applied in
-order to minimize the chances of changes in image characteristics
-affecting application performance.
+Histogram-based approaches to estimating thresholds are very useful, but also can be surprisingly sensitive to changes in image characteristics. Padding images, for example, can easily add a large spike to a histogram that can cause unexpected outputs from many methods. In the example illustrated here, changing the framing of the scene could easily change the significance of the background class leading to very different behaviour. Underlying assumptions built into some methods, such as Gaussian mixture models, can become unrealistic if image acquisition conditions (e.g. lighting) change, and such changes are not necessarily obvious to the naked eye. Always use with care and always attempt to constrain the areas to which such estimation is applied in order to minimize the chances of changes in image characteristics affecting application performance.
 
-This contribution is a set of standard thresholding methods available
-in other packages. The implementation is derived from the ImageJ
-java plugin. These classes have been included recently in the ITK 4
-distribution via Gerrit and include a variety of tests.
+This contribution is a set of standard thresholding methods available in other packages. The implementation is derived from the ImageJ java plugin. These classes have been included recently in the ITK 4 distribution via Gerrit and include a variety of tests.
 
-Several of the articles cited describe extensions to the basic methods
-to support multi-level thresholding. Additional control of the
-histogramming parameters can also be included. Only the most basic are
-in the current version. Hopefully these extensions can be implemented
-in the future.
+Several of the articles cited describe extensions to the basic methods to support multi-level thresholding. Additional control of the histogramming parameters can also be included. Only the most basic are in the current version. Finally, masked versions of these classes are also likely to be useful. This should be relatively simple to implement using the masked histogram infrastructure. Hopefully these extensions can be implemented in the future.
 
 \appendix
 

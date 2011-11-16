@@ -26,7 +26,7 @@ int main(int argc, char * argv[])
   
   itk::Instance <itk::MomentsThresholdImageFilter<RawImType, LabImType > > Thr;
   Thr->SetInput(raw);
-  Thr->SetOutsideValue(1);
+  Thr->SetOutsideValue(255);
   Thr->SetInsideValue(0);
 
   writeIm<LabImType>(Thr->GetOutput(), argv[2]);
