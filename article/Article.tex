@@ -101,7 +101,7 @@ Shanbhag\cite{shanbhag1994utilization} and
 Triangle\cite{zack1977automatic}.
 
 All classes are largely derived from the AutoThresh
-\cite{LandiniImageJ} package for ImageJ. The brief outline below is
+\cite{LandiniImageJ} package for ImageJ. Parts of the brief outline below are
 taken from the presentation associated with the
 HistThresh\cite{HistThreshMatlab} matlab toolbox, which was also a
 source of information for the AutoThresh package. The exception is the
@@ -116,13 +116,13 @@ histogram framework. Methods for setting number of histogram bins and
 {\em itkHuangThresholdImageFilter} implements Huang's fuzzy
 thresholding using Shannon's entropy
 function\cite{huang1995image}. The measure of fuzziness represents the
-difference between the original image and a its binary version. For a
+difference between the original image and its binary version. For a
 given threshold level the fuzzy membership function for a pixel is defined by the
 absolute difference between the pixel gray level and the average gray
 level of the region to which it belongs, with a larger difference
 leading to a smaller membership value. The optimal threshold is
 the value that minimizes the fuzziness, as defined by Shannon's
-entropy function applied to the fuzzy membership functions.
+entropy function, applied to the fuzzy membership functions.
 
 \subsection{Intermodes}
 {\em itkIntermodesThresholdImageFilter} implements the methods
@@ -147,7 +147,7 @@ the threshold is larger than the average of the brightness of the two regions.
 \subsection{MaxEntropy}
  {\em itkMaxEntropyThresholdImageFilter} implements the method
  described in \cite{kapur1985new}, which chooses a threshold such that the entropies of distributions above and
-below threshold is maximised. One of several entropy-based approaches.
+below threshold are maximised. One of several entropy-based approaches.
 \subsection{RenyiEntropy}
 {\em itkRenyiEntropyThresholdImageFilter} Similar to MaxEntropy, but using a different entropy measure\cite{kapur1985new}.
 
@@ -179,35 +179,35 @@ maximum distance between the line and the histogram. This
 implementation uses robust (default is 1\% and 99\%) estimation of histogram ends.
 
 \section{Results}
-The results for a cropped and smoothed version of the BrainProtonDensitySlice image is used to demonstrate the results. Smoothing has been applied to avoid the gaps in the histogram and cropping has been applied to remove a peak at 0 caused by padding in the original. This is a slightly challenging image to threshold as there are 3 classes, but the two brighter ones overlap. The mode-based approaches, results in Figure \ref{fig:bpdthreshA}, select thresholds between the darkest (background) class and the foreground, thus merging the two foreground classes. Some of the entropy measures, shown in Figure \ref{fig:bpdthreshB}, attempt to split the two foreground classes, with varying degrees of success.
+A cropped and smoothed version of the BrainProtonDensitySlice image is used to demonstrate the results. Smoothing has been applied to avoid the gaps in the histogram and cropping has been applied to remove a peak at 0 caused by padding in the original. This is a slightly challenging image to threshold as there are 3 classes, but the two brighter ones overlap. The mode-based approaches, results in Figure \ref{fig:bpdthreshA}, select thresholds between the darkest (background) class and the foreground, thus merging the two foreground classes. Some of the entropy measures, shown in Figure \ref{fig:bpdthreshB}, attempt to split the two foreground classes, with varying degrees of success. The thresholds are shown on the histogram in Figure \ref{fig:thresh}.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[height=5cm]{BrainProtonDensitySliceBorder20}
+\includegraphics[angle=180,totalheight=5cm]{BrainProtonDensitySliceBorder20}
 \caption{The input image.\label{fig:bpd}}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\subfigure[Kittler Illingworth]{\includegraphics[height=5cm]{outKittlerIllingworth}}
-\subfigure[Intermode]{\includegraphics[height=5cm]{outIntermodes}}
-\subfigure[Intermode - minimum]{\includegraphics[height=5cm]{outMinimum}}
+\subfigure[Kittler Illingworth]{\includegraphics[angle=180,totalheight=5cm]{outKittlerIllingworth}}
+\subfigure[Intermode]{\includegraphics[angle=180,totalheight=5cm]{outIntermodes}}
+\subfigure[Intermode - minimum]{\includegraphics[angle=180,totalheight=5cm]{outMinimum}}
 
-\subfigure[IsoData]{\includegraphics[height=5cm]{outIsoData}}
-\subfigure[Monents]{\includegraphics[height=5cm]{outMoments}}
-\subfigure[Triangle]{\includegraphics[height=5cm]{outTriangle}}
+\subfigure[IsoData]{\includegraphics[angle=180,totalheight=5cm]{outIsoData}}
+\subfigure[Monents]{\includegraphics[angle=180,totalheight=5cm]{outMoments}}
+\subfigure[Triangle]{\includegraphics[angle=180,totalheight=5cm]{outTriangle}}
 \caption{Thresholded images.\label{fig:bpdthreshA}}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\subfigure[Huang]{\includegraphics[height=5cm]{outHuang}}
-\subfigure[Li]{\includegraphics[height=5cm]{outLi}}
-\subfigure[Maximum Entropy]{\includegraphics[height=5cm]{outMaxEntropy}}
+\subfigure[Huang]{\includegraphics[angle=180,totalheight=5cm]{outHuang}}
+\subfigure[Li]{\includegraphics[angle=180,totalheight=5cm]{outLi}}
+\subfigure[Maximum Entropy]{\includegraphics[angle=180,totalheight=5cm]{outMaxEntropy}}
 
-\subfigure[Renyi Entropy]{\includegraphics[height=5cm]{outRenyiEntropy}}
-\subfigure[Yen]{\includegraphics[height=5cm]{outYen}}
-\subfigure[Shanbhag]{\includegraphics[height=5cm]{outShanbhag}}
+\subfigure[Renyi Entropy]{\includegraphics[angle=180,totalheight=5cm]{outRenyiEntropy}}
+\subfigure[Yen]{\includegraphics[angle=180,totalheight=5cm]{outYen}}
+\subfigure[Shanbhag]{\includegraphics[angle=180,totalheight=5cm]{outShanbhag}}
 \caption{Thresholded images.\label{fig:bpdthreshB}}
 \end{figure}
 
